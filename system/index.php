@@ -1,0 +1,9 @@
+<?php
+    include("../includes/layout/head.php");
+    include("../includes/layout/sidebar.php");
+    include("../includes/layout/cuerpo.php");
+    require('../includes/auth.php');
+?>
+<?php
+    include("../includes/layout/foot.php");
+?>

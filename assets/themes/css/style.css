@@ -1,0 +1,30 @@
+.fondop {
+	background-image: url(../../images/fondop1.jpg);
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+#header-cintillo {
+	background-image: url(../../images/cintillo.png) !important;
+	background-size:100% 100%;
+	background-repeat: no-repeat !important;
+}
+#banner {
+	background-image: url(../../images/banner.jpg);
+	background-size:cover;
+	height: 300px;
+}
+#imgperfil {
+	border-radius: 10px;
+	border: solid;
+}
+.btn-file input[type=file] {
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    text-align: right;
+    opacity: 0;
+    background: none repeat scroll 0 0 transparent;
+    cursor: inherit;
+    display: block;
+}
