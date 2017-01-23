@@ -12,12 +12,13 @@
 				<div class="pull-left login-desc-box-l">
 					<h3 class="paragraph-header">SISTEMA PARA EL CONTROL DE LA GESTION POLICIAL</h3>
 				</div>
+				
 			</div>
 		</div>
 		<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 			<div class="well no-padding">
 				<form action="index2.php" id="login-form" class="smart-form client-form" method="post" enctype="multipart/form-data">
-					<header> Ingresar </header>
+					<header><h3 class="txt-color-red login-header-big">INGRESAR</h3></header>
 					<fieldset>
 						<section>
 							<label class="label">Usuario</label>

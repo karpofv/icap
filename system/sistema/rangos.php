@@ -63,7 +63,7 @@
 				Rangos
 		</h1> </div>
 	</div>
-	<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+	<article class="col-sm-12 col-md-12 col-lg-6">
 		<!-- Widget ID (each widget will need unique ID)-->
 		<div class="jarviswidget jarviswidget-sortable" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false" role="widget" style="position: relative; opacity: 1; left: 0px; top: 0px;">
 			<header role="heading">
@@ -86,6 +86,7 @@
                                 data: {
                                     codigo      : $('#codigo').val(),
                                     descrip    : $('#descrip').val(),
+                                    ver 		: 1,                                    
                                     org   		: <?php echo $org; ?>,
                                     editar     	: <?php echo $editarrt; ?>
                                 },
@@ -104,6 +105,7 @@
                                 url: 'controller.php',
                                 data: {
                                     descrip      : $('#descrip').val(),
+									ver 		: 1,                                    
                                     org   		: <?php echo $org; ?>
                                 },
                                 success: function(html) {
@@ -143,11 +145,11 @@
 	if ($permiso_accion['S']==1) {
 		$resultc = paraTodos::arrayConsulta("*", "rangos", "rang_codigo<>0")
 ?>
-		<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+		<article class="col-sm-12 col-md-12 col-lg-6">
 			<!-- Widget ID (each widget will need unique ID)-->
 			<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
 				<header role="heading">
-					<h2>rangos Registrados</h2> <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span> 
+					<h2>rangos Registrados</h2> 
 				</header>
 				<!-- widget div-->
 				<div role="content">
@@ -172,7 +174,11 @@
         			 	$.ajax({
         			 		type: 'POST',
         			 		url: 'controller.php',
-        					data: { editar: '<?php echo $rowc[rang_codigo]; ?>', org: <?php echo $org; ?>},
+        					data: { 
+        						editar: '<?php echo $rowc[rang_codigo]; ?>', 
+        						ver: 1,
+        						org: <?php echo $org; ?>
+        					},
         					success: function(html) {
         						$('#content').html(html);
         					},

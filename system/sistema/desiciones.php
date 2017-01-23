@@ -23,12 +23,11 @@
 	if ($permiso_accion['S']==1) {
 		$resultc = paraTodos::arrayConsulta("*", "expediente e, expediente_func ef, estado_exp ex", "e.exp_codigo=ef.expf_expcodigo and e.exp_estadoxp=ex.estxp_codigo")
 ?>
-		<article class="col-sm-12 col-md-12 sortable-grid ui-sortable">
+		<article class="col-sm-12 col-md-12">
 		<!-- Widget ID (each widget will need unique ID)-->
 		<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
 			<header role="heading">
 				<h2>Expedientes Registrados</h2> 
-				<span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span> 
 			</header>
 			<!-- widget div-->
 			<div role="content">
@@ -56,7 +55,7 @@
 ?>
 								<tr style="border-bottom: 1px solid #EEEEEE;">
 									<td>
-										<?php echo $rowc['exp_num'];?>
+										<?php echo $rowc['exp_codigo'];?>
 									</td>
 									<td>
 										<?php echo $rowc['exp_fecexp'];?>
@@ -88,7 +87,12 @@
 					       			 		$.ajax({
 					        			 		type: 'POST',
         		 								url: 'controller.php',		
-        										data: { editar: '<?php echo $rowc['expf_codigo']; ?>', org: <?php echo $org; ?>, cedula: <?php echo $rowc['expf_funcedula']; ?>},
+        										data: { 
+        											editar: '<?php echo $rowc['expf_codigo']; ?>', 
+        											org: <?php echo $org; ?>, 
+        											ver: 1,        											
+        											cedula: <?php echo $rowc['expf_funcedula']; ?>
+        										},
         										success: function(html) {
         											$('#content').html(html);
         										},
@@ -151,7 +155,7 @@
         	if ($editarrt!=""){
 			$resultsedes = paraTodos::arrayConsulta("*", "expediente e, estatus es, estado_exp ex, expediente_func ef", "ef.expf_expcodigo=e.exp_codigo and ex.estxp_codigo=e.exp_estadoxp and es.esta_codigo=exp_estatus and expf_codigo = $editarrt and ef.expf_funcedula=$cedula");
             foreach ($resultsedes as $row){
-				$num=$row['exp_num'];
+				$num=$row['exp_codigo'];
 				$fecexp=$row['exp_fecexp'];
 				$estatus=$row['esta_descrip'];
 				$hechos=$row['exp_hechos'];
@@ -182,7 +186,7 @@
         }		
 			//------------------------------------------------------------------------------------------------------------	
 ?>
-		<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+		<article class="col-sm-12 col-md-12 col-lg-6">
 			<!-- Widget ID (each widget will need unique ID)-->
 			<div class="jarviswidget jarviswidget-sortable" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false" role="widget" style="position: relative; opacity: 1; left: 0px; top: 0px;">
 				<header role="heading">
@@ -207,6 +211,7 @@
 									destitucion: $('input:radio[name=radio]:checked').val(),
 									descripcion: $('#descrip').val(),
 									fecdecision: $('#fecdecision').val(),
+                                    ver 		: 1,                                   
                                     org   		: <?php echo $org; ?>,
                                     editar     	: <?php echo $editarrt; ?>
                                 },
@@ -228,6 +233,7 @@
 									descripcion: $('#descrip').val(),
 									fecdecision: $('#fecdecision').val(),
                                     idperfil    : $('#idperfil').val(),
+									ver 		: 1,                                    
                                     org   		: <?php echo $org; ?>
                                 },
                                 success: function(html) {
@@ -378,7 +384,6 @@
 											</fieldset>
 											<footer>
 												<button type="submit" class="btn btn-primary"> Guardar </button>
-												<button type="button" class="btn btn-default"> Cancelar </button>
 											</footer>
 									</form>
 					</div>

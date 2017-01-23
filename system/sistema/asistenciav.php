@@ -1,3 +1,11 @@
+	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $ruta_base; ?>assets/css/datatables.css">
+	<div class="row">
+		<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+			<h1 class="page-title txt-color-blueDark">
+			<i class="fa fa-edit fa-fw "></i> 
+				Aplicación de Asistencia voluntaria
+		</h1> </div>
+	</div>	
 <?php
 	/*Se incluyen archicos comunes*/
 	$org = $_POST['org'];
@@ -26,12 +34,95 @@
     $observofic = $_POST['observofic'];
     $pondera = $_POST['pondera'];
 	//------------------------------------------------------------------------------------------------------------
+if ($permiso_accion['S']==1) {	
+		$resultc = paraTodos::arrayConsulta("*", "expediente e, estatus es, expediente_func ef, funcionarios f", "e.exp_estatus=es.esta_codigo and e.exp_codigo=ef.expf_expcodigo and ef.expf_funcedula=f.fun_cedula and esta_descrip='ASISTENCIA VOLUNTARIA'")
+?>
+		<article class="col-sm-12 col-md-12 col-lg-6">
+			<!-- Widget ID (each widget will need unique ID)-->
+			<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
+				<header role="heading">
+					<h2>Expedientes por aplicar asistencia voluntaria</h2>
+<?php
+					if ($permiso_accion['P']==1) {					
+?>										
+					<a class="a-print" href="<?php echo $ruta_base;?>system/controller.php?ver=1&org=<?php echo $org;?>&act=2" target="_blank" title="Imprimir"><span class="glyphicon glyphicon-print pull-right glyph-lg"></span></a>
+				<?php
+					}	
+					?>
+				</header>
+				<!-- widget div-->
+				<div role="content">
+					<!-- widget content -->
+					<div class="widget-body no-padding">
+						<table id="funcionarios" class="display" cellspacing="0" width="100%">
+								<thead>
+									<tr>
+										<th>Nº Expediente</th>
+										<th>Cédula</th>
+										<th>Nombres</th>
+										<th>Apellidos</th>
+										<th>Placa</th>
+										<th>Seleccionar</th>
+									</tr>
+								</thead>
+								<tbody>
+<?php
+		/*Se arrojan los datos en la tabla de funcionarios registrados*/
+		foreach($resultc as $rowc){
+			//------------------------------------------------------------------------------------------------------------
+?>
+									<tr style="border-bottom: 1px solid #EEEEEE;">
+										<td><?php echo $rowc['exp_codigo'];?></td>
+										<td><?php echo $rowc['fun_cedula'];?></td>
+										<td><?php echo $rowc['fun_nombre'];?></td>
+										<td><?php echo $rowc['fun_apellido'];?></td>
+										<td><?php echo $rowc['fun_placa'];?></td>																			
+										<td>
+<?php
+											/*Se verifica tenga todos los permisos*/
+        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
+?>
+												<a title="Editar el registro" onclick="
+       			 		$.ajax({
+        			 		type: 'POST',
+        			 		url: 'controller.php',
+        					data: { 
+        						mostrar: '<?php echo $rowc[expf_codigo]; ?>',
+								ver 		: 1,        						
+        						org: <?php echo $org; ?>
+        					},
+        					success: function(html) {
+        						$('#content').html(html);
+        					},
+        					error: function(xhr,msg,excep) { alert('Error Status ' + xhr.status + ': ' + msg + '/ ' + excep); }
+        				}); return false;" href="javascript: void(0);"> 
+        										<i class="fa fa-pencil-square-o" style="font-size: 1.600em;margin-left: 10px;"></i> </a>											
+<?php
+				}
+				//------------------------------------------------------------------------------------------------------------						
+?>
+										</td>
+									</tr>
+<?php
+		}
+?>
+							</tbody>
+						</table>
+					</div>
+					<!-- end widget content -->
+				</div>
+				<!-- end widget div -->
+			</div>
+			<!-- end widget -->
+		</article>
+<?php
+	}
 	/*Se verifican los permisos del usuario*/
     if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
-		/*GUARDAR -----------Se verifica que $editarrt=="" y las variables no se encuentren vacias para proceder a guardar  */		
+		/*GUARDAR -----------Se verifica que $editarrt=="" y las variables no se encuentren vacias para proceder a guardar  */	
         if ($editarrt=="" and $motivobserv!=""){
 			/*Se verifica no se encuentre ya registrado el Usuario de lo contrario se realiza el insert*/
-			$resultx = paraTodos::arrayConsultanum("asis_codigo", "asistencia", "asis_funcedula = '$cedula' and asis_expcodigo=$expcodigo");
+			$resultx = paraTodos::arrayConsultanum("asis_codigo", "asistencia_v", "asis_funcedula = '$cedula' and asis_expcodigo=$expcodigo");
 			if ($resultx > 0){
 				echo '
 				<div class="alert alert-block alert-success">
@@ -39,7 +130,7 @@
 					<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Funcionario ya posee asginada una asistencia voluntaria bajo este expediente!</h4>
 				</div>';
 			} else {
-				$insertar = paraTodos::arrayInserte("asis_fecha, asis_expcodigo, asis_funcedula, asis_observacion, asis_tipor, asis_lugarr, asis_horas, asis_supervisor, asis_observaofic, asis_pondera, asis_tipo","asistencia","'$fecini',$expcodigo,$cedula,'$motivobserv','$tiporeentre','$lugarreent','$canthoras','$superv','$observofic','$pondera','VOLUNTARIA'");
+				$insertar = paraTodos::arrayInserte("asis_fecha, asis_expcodigo, asis_funcedula, asis_observacion, asis_tipor, asis_lugarr, asis_horas, asis_supervisor, asis_observaofic, asis_pondera, asis_tipo","asistencia_v","'$fecini',$expcodigo,$cedula,'$motivobserv','$tiporeentre','$lugarreent','$canthoras','$superv','$observofic','$pondera','VOLUNTARIA'");
                 if ($insertar) {
                     echo '<div class="alert alert-block alert-success">
 						<a class="close" data-dismiss="alert" href="#">×</a>
@@ -81,7 +172,7 @@
         if ($editarrt!="" and $asiscod!=""){
 			//------------------------------------------------------------------------------------------------------------
 			/*Se modifica los datos de registro del Usuario*/			
-			$modifico = paraTodos::arrayUpdate("asis_fecha='$fecini',asis_expcodigo='$expcodigo',asis_funcedula='$cedula',asis_observacion='$motivobserv',asis_tipor='$tiporeentre',asis_lugarr='$lugarreent',asis_horas='$canthoras',asis_supervisor='$superv',asis_observaofic='$observofic',asis_pondera='$pondera',asis_tipo='VOLUNTARIA'", "asistencia", "asis_codigo='$editarrt'");			
+			$modifico = paraTodos::arrayUpdate("asis_fecha='$fecini',asis_expcodigo='$expcodigo',asis_funcedula='$cedula',asis_observacion='$motivobserv',asis_tipor='$tiporeentre',asis_lugarr='$lugarreent',asis_horas='$canthoras',asis_supervisor='$superv',asis_observaofic='$observofic',asis_pondera='$pondera',asis_tipo='VOLUNTARIA'", "asistencia_v", "asis_codigo='$editarrt'");			
             if($modifico){
 				echo '
 				<div class="alert alert-block alert-success">
@@ -114,7 +205,7 @@
 			//------------------------------------------------------------------------------------------------------------			
         }
 		//------------------------------------------------------------------------------------------------------------		
-		/*MOSTRAR---------------------Se verifica si la variable $editarr!="" para proceder a Mostrar los datos guardados del usuario*/		
+		/*MOSTRAR---------------------Se verifica si la variable $editarr!="" para proceder a Mostrar los datos guardados del usuario*/
         if ($mostrar!=""){
 			$resultsedes = paraTodos::arrayConsulta("*", "expediente e, estatus es, expediente_func ef, funcionarios f", " e.exp_estatus=es.esta_codigo and e.exp_codigo=ef.expf_expcodigo and ef.expf_funcedula=f.fun_cedula and expf_codigo=$mostrar");
             foreach ($resultsedes as $row){
@@ -128,14 +219,38 @@
 				$rango = $row['expf_funrango'];
 				$procedencia = $row['fun_procedencia'];
 				$adscrito = $row['fun_adscrito'];
-				$numexp = $row['exp_num'];
-				$editarrt = $row['editar'];
+				$numexp = $row['exp_codigo'];
+			}
+        }
+		/*MOSTRAR---------------------Se verifica si la variable $editarr!="" para proceder a Mostrar los datos guardados del usuario*/
+        if ($editarrt!="" and $asiscod==""){
+			$resultsedes = paraTodos::arrayConsulta("*", "asistencia_v a, funcionarios f", "a.asis_funcedula=f.fun_cedula and asis_codigo=$editarrt");
+            foreach ($resultsedes as $row){
+				$expcodigo = $row['asis_expcodigo'];
+				$cedula = $row['fun_cedula'];
+				$nombre = $row['fun_nombre'];
+				$apellido = $row['fun_apellido'];
+				$fecingreso = $row['fun_fecingreso'];
+				$fecreingreso = $row['fun_fecreingreso'];
+				$placa = $row['fun_placa'];
+				$rango = $row['fun_rango'];
+				$procedencia = $row['fun_procedencia'];
+				$adscrito = $row['fun_adscrito'];
+				$numexp = $row['asis_expcodigo'];
+				$fecini = $row['asis_fecha'];
+				$motivobserv = $row['asis_observacion'];
+				$tiporeentre = $row['asis_tipor'];
+				$lugarreent = $row['asis_lugarr'];
+				$canthoras = $row['asis_horas'];
+				$superv = $row['asis_supervisor'];
+				$observofic = $row['asis_observaofic'];
+				$pondera = $row['asis_pondera'];
 			}
         }
 		//------------------------------------------------------------------------------------------------------------
 		/*BORRAR-----------------Se verifica si la variable $borrar!="" para proceder a eliminar el usuario*/
         if ($borrar<>"") {
-			$delete = paraTodos::arrayDelete("asis_codigo = $borrar","asistencia");
+			$delete = paraTodos::arrayDelete("asis_codigo = $borrar","asistencia_v");
             if ($delete) {
 				echo '
 					<div class="alert alert-block alert-success">
@@ -143,92 +258,10 @@
 						<h4 class="alert-heading"><i class="fa fa-check-square-o"></i>Asistencia eliminada!</h4>
 					</div>';
             }
-        }		
+        }
 		//------------------------------------------------------------------------------------------------------------	
 ?>
-	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $ruta_base; ?>assets/css/datatables.css">	
-	<div class="row">
-		<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-			<h1 class="page-title txt-color-blueDark">
-			<i class="fa fa-edit fa-fw "></i> 
-				Aplicación de Asistencia Voluntaria
-		</h1> </div>
-	</div>
-<?php
-if ($permiso_accion['S']==1) {
-		$resultc = paraTodos::arrayConsulta("*", "expediente e, estatus es, expediente_func ef, funcionarios f", "e.exp_estatus=es.esta_codigo and e.exp_codigo=ef.expf_expcodigo and ef.expf_funcedula=f.fun_cedula and esta_descrip='ASISTENCIA VOLUNTARIA'")
-?>
-		<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
-			<!-- Widget ID (each widget will need unique ID)-->
-			<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
-				<header role="heading">
-					<h2>Expedientes por aplicar asistencia voluntaria</h2> <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span> 
-				</header>
-				<!-- widget div-->
-				<div role="content">
-					<!-- widget content -->
-					<div class="widget-body no-padding">
-						<table id="funcionarios" class="display" cellspacing="0" width="100%">
-								<thead>
-									<tr>
-										<th>Nº Expediente</th>
-										<th>Cédula</th>
-										<th>Nombres</th>
-										<th>Apellidos</th>
-										<th>Placa</th>
-										<th>Seleccionar</th>
-									</tr>
-								</thead>
-								<tbody>
-<?php
-		/*Se arrojan los datos en la tabla de funcionarios registrados*/
-		foreach($resultc as $rowc){
-			//------------------------------------------------------------------------------------------------------------
-?>
-									<tr style="border-bottom: 1px solid #EEEEEE;">
-										<td><?php echo $rowc['exp_num'];?></td>
-										<td><?php echo $rowc['fun_cedula'];?></td>
-										<td><?php echo $rowc['fun_nombre'];?></td>
-										<td><?php echo $rowc['fun_apellido'];?></td>
-										<td><?php echo $rowc['fun_placa'];?></td>																			
-										<td>
-<?php
-											/*Se verifica tenga todos los permisos*/
-        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
-?>
-												<a title="Editar el registro" onclick="
-       			 		$.ajax({
-        			 		type: 'POST',
-        			 		url: 'controller.php',
-        					data: { mostrar: '<?php echo $rowc[expf_codigo]; ?>', org: <?php echo $org; ?>},
-        					success: function(html) {
-        						$('#content').html(html);
-        					},
-        					error: function(xhr,msg,excep) { alert('Error Status ' + xhr.status + ': ' + msg + '/ ' + excep); }
-        				}); return false;" href="javascript: void(0);"> 
-        										<i class="fa fa-pencil-square-o" style="font-size: 1.600em;margin-left: 10px;"></i> </a>											
-<?php
-				}
-				//------------------------------------------------------------------------------------------------------------						
-?>
-										</td>
-									</tr>
-<?php
-		}
-?>
-							</tbody>
-						</table>
-					</div>
-					<!-- end widget content -->
-				</div>
-				<!-- end widget div -->
-			</div>
-			<!-- end widget -->
-		</article>
-<?php
-	}
-?>
-	<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+	<article class="col-sm-12 col-md-12 col-lg-6">
 		<!-- Widget ID (each widget will need unique ID)-->
 		<div class="jarviswidget jarviswidget-sortable" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false" role="widget" style="position: relative; opacity: 1; left: 0px; top: 0px;">
 			<header role="heading">
@@ -259,8 +292,10 @@ if ($permiso_accion['S']==1) {
 									superv: $('#superv').val(),
 									observofic: $('#observofic').val(),
 									pondera: $('#pondera').val(),									
+                                    ver 		: 1,                                   
                                     org   		: <?php echo $org; ?>,
-                                    editar     	: <?php echo $editarrt; ?>
+                                    editar     	: <?php echo $editarrt; ?>,
+                                    asis_codigo     	: <?php echo $editarrt; ?>
                                 },
                                 success: function(html) {
                                 	$('#content').html(html); 
@@ -287,6 +322,7 @@ if ($permiso_accion['S']==1) {
 									superv: $('#superv').val(),
 									observofic: $('#observofic').val(),
 									pondera: $('#pondera').val(),
+                                    ver 		: 1,                                   
                                     org   		: <?php echo $org; ?>
                                 },
                                 success: function(html) {
@@ -319,8 +355,7 @@ if ($permiso_accion['S']==1) {
 							<div class="row">
 								<section class="col col-6">
 									<label class="label"><b>Cédula</b></label>
-									<label class="input" id="cedula">
-										<?php echo $cedula;?>
+									<label class="input" id="cedula"><?php echo $cedula;?></label>
 								</section>
 								<section class="col col-6">
 									<label class="label"><b>Fecha de Ingreso</b></label>
@@ -441,7 +476,6 @@ if ($permiso_accion['S']==1) {
 						</fieldset>
 						<footer>
 							<button type="submit" class="btn btn-primary"> Guardar </button>
-							<button type="button" class="btn btn-default" onclick="window.history.back();"> Regresar </button>
 						</footer>
 					</form>
 				</div>

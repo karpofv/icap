@@ -49,7 +49,7 @@
                             opcion: 'delfunimpl',
                             org: 352,
                             cedula: <?php echo $rowf['denf_funcedula']?>, 
-                            ver: 1
+                            ver: 2
                         },
 						success: function(html) {
                             $.ajax({
@@ -59,7 +59,7 @@
                                     codigo: '<?php echo $rowf['denf_dencodigo']?>',
                                     opcion: 'acttabfunimpl',
                                     org: 352,
-                                    ver: 1
+                                    ver: 2
                                 },
 								success: function(html) {
                                     $('#tbfuncasig').html(html);

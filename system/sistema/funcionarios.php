@@ -32,10 +32,171 @@
     $talleres = $_POST['fun_talleres'];
     $reportes = $_POST['fun_reportesserv'];
     $retirado = $_POST['fun_retirado'];
+    $llamados = $_POST['fun_llamados'];
+    $denuncias = $_POST['fun_denuncias'];
+    $asisvol = $_POST['fun_asisvol'];
+    $asisobli = $_POST['fun_asisobli'];
+    $expedadmin = $_POST['fun_numexp'];
     $idperfil = $_POST['idperfil'];
     $borrar = $_POST['borrar'];
     $editarrt = $_POST['editar'];
 	//------------------------------------------------------------------------------------------------------------
+if ($permiso_accion['S']==1) {
+		$resultc = paraTodos::arrayConsulta("*", "funcionarios", "1=1")
+?>
+		<article class="col-sm-12">
+			<!-- Widget ID (each widget will need unique ID)-->
+			<div class="jarviswidget jarviswidget-color-darken " id="wid-id-0">
+				<header role="heading">
+					<h2>Funcionarios Registrados</h2>
+				<?php
+					if ($permiso_accion['P']==1) {					
+				?>					
+					<a class="a-print" href="<?php echo $ruta_base;?>system/controller.php?ver=1&org=<?php echo $org;?>&act=2" target="_blank" title="Imprimir"><span class="glyphicon glyphicon-print pull-right glyph-lg"></span></a>
+				<?php
+					}	
+					?>
+				</header>
+				<!-- widget div-->
+				<div role="content">
+					<!-- widget content -->
+					<div class="widget-body no-padding">
+						<table id="funcionarios" class="display" cellspacing="0" width="100%">
+								<thead>
+									<tr>
+										<th></th>									
+										<th>Cedula</th>
+										<th>Nombres</th>
+										<th>Apellidos</th>
+										<th>Placa</th>
+										<th>Editar</th>
+										<th>Foto</th>
+										<th>Eliminar</th>
+									</tr>
+								</thead>
+								<tbody>
+<?php
+		/*Se arrojan los datos en la tabla de funcionarios registrados*/
+		foreach($resultc as $rowc){
+			//------------------------------------------------------------------------------------------------------------
+?>
+									<tr style="border-bottom: 1px solid #EEEEEE;">
+										<td><a class="" href="<?php echo $ruta_base;?>system/controller.php?ver=1&org=<?php echo $org;?>&act=3&ced=<?php echo $rowc['fun_cedula'];?>" target="_blank" title="Imprimir"><span class="glyphicon glyphicon-print pull-right glyph-lg"></span></a></td>																			
+										<td><?php echo $rowc['fun_cedula'];?></td>
+										<td><?php echo $rowc['fun_nombre'];?></td>
+										<td><?php echo $rowc['fun_apellido'];?></td>
+										<td><?php echo $rowc['fun_placa'];?></td>
+										<td>
+<?php
+											/*Se verifica tenga todos los permisos*/
+        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
+?>
+												<a title="Editar el registro" onclick="
+       			 		$.ajax({
+        			 		type: 'POST',
+        			 		url: 'controller.php',
+        					data: { 
+        						editar: '<?php echo $rowc[fun_codigo]; ?>', 
+        						ver: 1,
+        						org: <?php echo $org; ?>
+        					},
+        					success: function(html) {
+        						$('#content').html(html);
+        						if ($('#retirado').val()=='Si'){
+											$('#retirado_si').removeClass('collapse');
+										} else {
+											$('#retirado_si').addClass('collapse');										
+										}
+        					},
+        					error: function(xhr,msg,excep) { alert('Error Status ' + xhr.status + ': ' + msg + '/ ' + excep); }
+        				}); return false;" href="javascript: void(0);"> 
+        										<i class="fa fa-pencil-square-o" style="font-size: 1.600em;margin-left: 10px;"></i> </a>											
+<?php
+				}
+				//------------------------------------------------------------------------------------------------------------						
+?>
+										</td>
+										<td>
+<?php
+											/*Se verifica tenga todos los permisos*/
+        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
+?>										
+												<div tabindex="500" class="btn btn-primary btn-file" id="selarchivo">
+													<i class="glyphicon glyphicon-folder-open"></i>&nbsp;  
+													<span class="hidden-xs">Seleccione Imagen …</span>
+													<input id="archivoImage<?php echo $rowc['fun_cedula'];?>" name="archivoImage<?php echo $rowc['fun_cedula'];?>" type="file" class="file">					
+												</div>
+												<input id="botonSubidor" type="button" class="btn btn-default" value="Actualizar" onclick="													
+													var urlr = '<?php echo $ruta_base;?>assets/upload/rename.php';
+													var c = <?php echo $rowc['fun_cedula'];?>;
+													$.ajax({
+														url:urlr,
+														type:'POST',
+														data: { c: c }
+													});
+													var inputFileImage = document.getElementById('archivoImage<?php echo $rowc['fun_cedula'];?>');
+													var file = inputFileImage.files[0];
+													var data = new FormData();
+													data.append('archivo',file);
+													var url = '<?php echo $ruta_base;?>assets/upload/upload.php';													
+													$.ajax({
+														url:url,
+														type:'POST',
+														contentType:false,
+														data:data,
+														data:data,
+														processData:false,
+														success : function (msg) {
+														}
+													});							
+													$.ajax({
+        			 									type: 'POST',
+        			 									url: 'controller.php',
+        												data: { editar: '<?php echo $rowc[fun_codigo]; ?>', org: <?php echo $org; ?>},
+        												success: function(html) {
+        													$('#content').html(html);
+        												},
+        												error: function(xhr,msg,excep) { alert('Error Status ' + xhr.status + ': ' + msg + '/ ' + excep); }
+        											});">
+<?php
+										}
+				//------------------------------------------------------------------------------------------------------------						
+?>        									
+										</td>										
+										<td>
+<?php
+											/*Se verifica tenga todos los permisos*/
+        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
+?>										
+											<a title="Eliminar el registro" onclick=" var msg = confirm('Esta seguro que desea eliminar el registro?');
+        									if (msg) {
+        										$.ajax({
+        											type: 'POST',
+        											url: 'controller.php',
+        											data: { borrar: <?php echo $rowc[fun_codigo]; ?>, org: <?php echo $org; ?>, cedula: <?php echo $rowc['fun_cedula'];?>},
+        											success: function(html) { $('#content').html(html); }
+        										});
+        									} return false;" href="javascript: void(0);"> <i class="fa fa-eraser" style="font-size: 1.600em;margin-left: 10px;"></i> </a>											
+<?php
+				}
+				//------------------------------------------------------------------------------------------------------------						
+?>        									
+										</td>
+									</tr>
+<?php
+		}
+?>
+							</tbody>
+						</table>
+					</div>
+					<!-- end widget content -->
+				</div>
+				<!-- end widget div -->
+			</div>
+			<!-- end widget -->
+		</article>
+<?php
+	}
 	/*Se verifican los permisos del usuario*/
     if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
 		/*GUARDAR -----------Se verifica que $editarrt=="" y las variables no se encuentren vacias para proceder a guardar  */		
@@ -49,42 +210,47 @@
 					<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Funcionario ya esta registrado!</h4>
 				</div>';
 			} else {
-				$insertar = paraTodos::arrayInserte("fun_nacionalidad, fun_cedula, fun_fecnac, fun_nombre, fun_apellido, fun_genero, fun_fecingreso, fun_fecegreso, fun_motivegreso, fun_fecreingreso, fun_anosserv, fun_estcivil, fun_telefonom, fun_telefonoc, fun_direccion, fun_nom_madre, fun_cargafam, fun_nom_padre, fun_placa, fun_rango, fun_nivel, fun_procedencia, fun_adscrito, fun_nivelacad, fun_profesion, fun_cursos, fun_talleres, fun_reportesserv, fun_retirado","funcionarios","'$nacionalidad','$cedula','$fecnac','$nombre','$apellido','$genero','$fecingreso','$fecegreso','$motivegreso','$fecreingreso','$anosserv','$estcivil','$telefonom','$telefonoc','$direccion','$nommadre','$cargafam','$nompadre','$placa','$rango','$nivel','$procedencia','$adscrito','$nivelacad','$profesion','$cursos','$talleres','$reportes','$retirado'");
+				$insertar = paraTodos::arrayInserte("fun_nacionalidad, fun_cedula, fun_fecnac, fun_nombre, fun_apellido, fun_genero, fun_fecingreso, fun_fecegreso, fun_motivegreso, fun_fecreingreso, fun_anosserv, fun_estcivil, fun_telefonom, fun_telefonoc, fun_direccion, fun_nom_madre, fun_cargafam, fun_nom_padre, fun_placa, fun_rango, fun_nivel, fun_procedencia, fun_adscrito, fun_nivelacad, fun_profesion, fun_cursos, fun_talleres, fun_reportesserv, fun_retirado, fun_llamados,fun_denuncias,fun_asisvol,fun_asisobli,fun_numexp","funcionarios","'$nacionalidad','$cedula','$fecnac','$nombre','$apellido','$genero','$fecingreso','$fecegreso','$motivegreso','$fecreingreso','$anosserv','$estcivil','$telefonom','$telefonoc','$direccion','$nommadre','$cargafam','$nompadre','$placa','$rango','$nivel','$procedencia','$adscrito','$nivelacad','$profesion','$cursos','$talleres','$reportes','$retirado','$llamados','$denuncias','$asisvol','$asisobli','$expedadmin'");
                 if ($insertar) {
                     echo '<div class="alert alert-block alert-success">
 						<a class="close" data-dismiss="alert" href="#">×</a>
 						<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Funcionario Creado!</h4>
 					</div>';
-				$editarrt="";
-				$nacionalidad='';
-				$cedula = '';
-				$fecnac = '';
-				$nombre = '';
-				$apellido = '';
-				$genero = '';
-				$fecingreso = '';
-				$fecegreso = '';
-				$motivegreso = '';
-				$fecreingreso = '';
-				$anosserv = '';
-				$estcivil = '';
-				$telefonom = '';
-				$telefonoc = '';
-				$direccion = '';
-				$nommadre = '';
-				$cargafam = '';
-				$nompadre = '';
-				$placa = '';
-				$rango = '';
-				$procedencia = '';
-				$adscrito = '';
-				$nivelacad = '';
-				$nivel = '';
-				$profesion = '';
-				$cursos = '';
-				$talleres = '';
-				$reportes = '';
-				$retirado = '';
+					$editarrt="";
+					$nacionalidad='';
+					$cedula = '';
+					$fecnac = '';
+					$nombre = '';
+					$apellido = '';
+					$genero = '';
+					$fecingreso = '';
+					$fecegreso = '';
+					$motivegreso = '';
+					$fecreingreso = '';
+					$anosserv = '';
+					$estcivil = '';
+					$telefonom = '';
+					$telefonoc = '';
+					$direccion = '';
+					$nommadre = '';
+					$cargafam = '';
+					$nompadre = '';
+					$placa = '';
+					$rango = '';
+					$procedencia = '';
+					$adscrito = '';
+					$nivelacad = '';
+					$nivel = '';
+					$profesion = '';
+					$cursos = '';
+					$talleres = '';
+					$reportes = '';
+					$retirado = '';
+					$llamados = '';
+					$denuncias = '';
+					$asisvol = '';
+					$asisobli = '';
+					$expedadmin = '';
                 }else{
 					echo '
 					<div class="alert alert-block alert-success">
@@ -100,7 +266,7 @@
         if ($editarrt!=""){
 			//------------------------------------------------------------------------------------------------------------
 			/*Se modifica los datos de registro del Usuario*/			
-			$modifico = paraTodos::arrayUpdate("fun_nacionalidad='$nacionalidad',fun_cedula='$cedula',fun_fecnac='$fecnac',fun_nombre='$nombre',fun_apellido='$apellido',fun_genero='$genero',fun_fecingreso='$fecingreso',fun_fecegreso='$fecegreso',fun_motivegreso='$motivegreso',fun_fecreingreso='$fecreingreso',fun_anosserv='$anosserv',fun_estcivil='$estcivil',fun_telefonom='$telefonom',fun_telefonoc='$telefonoc',fun_direccion='$direccion',fun_nom_madre='$nommadre',fun_cargafam='$cargafam',fun_nom_padre='$nompadre',fun_placa='$placa',fun_rango='$rango',fun_nivel='$nivel',fun_procedencia='$procedencia',fun_adscrito='$adscrito',fun_nivelacad='$nivelacad',fun_profesion='$profesion',fun_cursos='$cursos',fun_talleres='$talleres',fun_reportesserv='$reportes',fun_retirado='$retirado'", "funcionarios", "fun_codigo='$editarrt'");			
+			$modifico = paraTodos::arrayUpdate("fun_nacionalidad='$nacionalidad',fun_cedula='$cedula',fun_fecnac='$fecnac',fun_nombre='$nombre',fun_apellido='$apellido',fun_genero='$genero',fun_fecingreso='$fecingreso',fun_fecegreso='$fecegreso',fun_motivegreso='$motivegreso',fun_fecreingreso='$fecreingreso',fun_anosserv='$anosserv',fun_estcivil='$estcivil',fun_telefonom='$telefonom',fun_telefonoc='$telefonoc',fun_direccion='$direccion',fun_nom_madre='$nommadre',fun_cargafam='$cargafam',fun_nom_padre='$nompadre',fun_placa='$placa',fun_rango='$rango',fun_nivel='$nivel',fun_procedencia='$procedencia',fun_adscrito='$adscrito',fun_nivelacad='$nivelacad',fun_profesion='$profesion',fun_cursos='$cursos',fun_talleres='$talleres',fun_reportesserv='$reportes',fun_retirado='$retirado',fun_llamados='$llamados',fun_denuncias='$denuncias',fun_asisvol='$asisvol',fun_asisobli='$asisobli',fun_numexp='$expedadmin'", "funcionarios", "fun_codigo='$editarrt'");			
             if($modifico){
 				echo '
 				<div class="alert alert-block alert-success">
@@ -137,6 +303,11 @@
 				$talleres = '';
 				$reportes = '';
 				$retirado = '';
+				$llamados = '';
+				$denuncias = '';
+				$asisvol = '';
+				$asisobli = '';
+				$expedadmin = '';				
             }
 			//------------------------------------------------------------------------------------------------------------			
         }
@@ -174,6 +345,11 @@
 				$talleres = $row['fun_talleres'];
 				$reportes = $row['fun_reportesserv'];
 				$retirado = $row['fun_retirado'];
+				$llamados = $row['fun_llamados'];
+				$denuncias = $row['fun_denuncias'];
+				$asisvol = $row['fun_asisvol'];
+				$asisobli = $row['fun_asisobli'];
+				$expedadmin = $row['fun_numexp'];				
 			}
         }
 		//------------------------------------------------------------------------------------------------------------
@@ -192,13 +368,13 @@
 ?>
 	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $ruta_base; ?>assets/css/datatables.css">	
 	<div class="row">
-		<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+		<div class="col-xs-12">
 			<h1 class="page-title txt-color-blueDark">
 			<i class="fa fa-edit fa-fw "></i> 
 				Registro Individual de Funcionarios activos en el CPEB
 		</h1> </div>
 	</div>
-	<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+	<article class="col-sm-12">
 		<!-- Widget ID (each widget will need unique ID)-->
 		<div class="jarviswidget jarviswidget-sortable" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false" role="widget" style="position: relative; opacity: 1; left: 0px; top: 0px;">
 			<header role="heading">
@@ -248,6 +424,12 @@
 									fun_talleres: $('#taller').val(),
 									fun_reportesserv: $('#reports').val(),
 									fun_retirado: $('#retirado').val(),
+									fun_llamados:$('#llamadoaten').val(),
+									fun_denuncias:$('#denuncias').val(),
+									fun_asisvol:$('#asisvol').val(),
+									fun_asisobli:$('#asisobli').val(),
+									fun_numexp: $('#expedadmin').val(),
+                                    ver 		: 1,                                   
                                     org   		: <?php echo $org; ?>,
                                     editar     	: <?php echo $editarrt; ?>
                                 },
@@ -294,7 +476,13 @@
 									fun_talleres: $('#taller').val(),
 									fun_reportesserv: $('#reports').val(),
 									fun_retirado: $('#retirado').val(),
+									fun_llamados:$('#llamadoaten').val(),
+									fun_denuncias:$('#denuncias').val(),
+									fun_asisvol:$('#asisvol').val(),
+									fun_asisobli:$('#asisobli').val(),
+									fun_numexp: $('#expedadmin').val(),                                   
                                     idperfil    : $('#idperfil').val(),
+									ver 		: 1,                                    
                                     org   		: <?php echo $org; ?>
                                 },
                                 success: function(html) {
@@ -308,33 +496,9 @@
         }
 		//------------------------------------------------------------------------------------------------------------
 ?>
-						<header> Datos Personales </header>
+						<header><b> Datos Personales </b></header>
 						<fieldset>
 							<div class="row">
-								<section class="col col-2">
-									<label class="label">Nacionalidad</label>
-									<label class="select">
-										<select id="nacional" name="nacional">
-       										<option>Seleccione</option>
-        									<?php  
-												$nacionalidad = Combos::CombosSelect('1', $nacionalidad, 'DISTINCT fun_nacionalidad', 'funcionarios', 'fun_nacionalidad', 'fun_nacionalidad', "fun_cedula<>'' ORDER BY fun_retirado");
-												$nacionalidad;
-												if ($nacionalidad==''){
-											?>
-												<option>V</option>
-												<option>E</option>
-											<?php
-												}
-											?>
-										</select> <i></i> 
-									</label>
-								</section>
-								<section class="col col-4">
-									<label class="label">Placa</label>
-									<label class="input">
-										<input type="number" class="input-sm" min="1" size="10" name="placa" id="placa" value="<?php echo $placa;?>" required="required"> 
-									</label>
-								</section>
 								<section class="col col-6">
 									<?php
 										$url = $absolute_uri."assets/images/fotos/$cedula.jpg";
@@ -350,35 +514,59 @@
 							</div>							
 							<div class="row">
 								<section class="col col-2">
+									<label class="label">Nacionalidad</label>
+									<label class="select">
+									<select id="nacional" name="nacional">
+       										<option>Seleccione</option>
+        									<?php  
+												$nacionalidad = Combos::CombosSelect('1', $nacionalidad, 'DISTINCT fun_nacionalidad', 'funcionarios', 'fun_nacionalidad', 'fun_nacionalidad', "fun_cedula='$cedula' ORDER BY fun_retirado");
+												$nacionalidad;
+												if ($nacionalidad==''){
+											?>
+												<option>V</option>
+												<option>E</option>
+											<?php
+												}
+											?>
+										</select> 
+									</label>
+								</section>							
+								<section class="col col-2">
 									<label class="label">Cédula</label>
 									<label class="input">
 										<input type="number" class="input-sm" min="1" size="10" name="cedula" id="cedula" value="<?php echo $cedula;?>" required="required"> </label>
 								</section>
-								<section class="col col-5">
+								<section class="col col-2">
+									<label class="label">Placa</label>
+									<label class="input">
+										<input type="number" class="input-sm" min="1" size="10" name="placa" id="placa" value="<?php echo $placa;?>" required="required"> 
+									</label>
+								</section>	
+							</div>
+							<div class="row">
+								<section class="col col-4">
 									<label class="label">Nombres</label>
 									<label class="input">
 										<input type="text" class="input-sm" maxLength="100" size="60" name="nombre" id="nombre" value="<?php echo $apellido ; ?>" required="required"> 
 									</label>
 								</section>
-								<section  class="col col-5">
+								<section  class="col col-4">
 									<label class="label">Apellidos</label>
 									<label class="input">
 										<input type="text"class="input-sm" maxLength="100" size="60" name="apellido" id="apellido" value="<?php echo $nombre ; ?>" required="required"> </label>								
 								</section>
-							</div>	
-							<div class="row">
 								<section class="col col-3">
 									<label class="label">Estado Civil</label>
 									<label class="input">
 										<input type="text" class="input-sm" maxLength="100" size="60" name="estcivil" id="estcivil" value="<?php echo $estcivil ; ?>" required="required">
 									</label>								
 								</section>
-								<section class="col col-3">
+								<section class="col col-2">
 									<label class="label">Fecha de Nacimiento</label>
 									<label class="input">
 										<input type="date" class="input-sm" size="60" name="fenac" id="fecnac" value="<?php echo $fecnac ; ?>" required="required"> </label>								
 								</section>
-								<section class="col col-4">
+								<section class="col col-2">
 									<label class="label">Genero</label>
 									<label class="select">
 										<select id="genero" name="genero">
@@ -388,15 +576,13 @@
 											?>
 										</select> <i></i> </label>
 								</section>
-							</div>
-							<div class="row">							
-								<section class="col col-6">
+								<section class="col col-4">
 										<label class="label">Teléfono de Habitación</label>									
 										<label class="input"> <i class="icon-prepend fa fa-phone"></i>
 											<input type="tel" name="telefh" id="telefh" data-mask="(999) 999-9999" value="<?php echo $telefonoc ; ?>">
 										</label>
 								</section>
-								<section class="col col-6">
+								<section class="col col-4">
 										<label class="label">Teléfono Movil</label>									
 										<label class="input"> <i class="icon-prepend fa fa-phone"></i>
 											<input type="tel" name="telefm" id="telefm" data-mask="(999) 999-9999"  value="<?php echo $telefonom; ?>">
@@ -410,15 +596,15 @@
 									</label>
 							</section>
 						</fieldset>
-						<header> Datos Familiares </header>						
+						<header><b>Datos Familiares </b></header>
 						<fieldset>
-							<section class="col col-6">
+							<section class="col col-5">
 								<label class="label">Nombre de la Madre</label>
 								<label class="input">
 									<input type="text" class="input-sm" maxLength="100" size="60" name="nombrem" id="nombrem" value="<?php echo $nommadre ; ?>"> 
 								</label>
 							</section>
-							<section class="col col-6">
+							<section class="col col-5">
 								<label class="label">Nombre del Padre</label>
 								<label class="input">
 									<input type="text" class="input-sm" maxLength="100" size="60" name="nombrep" id="nombrep" value="<?php echo $nompadre ; ?>"> 
@@ -431,7 +617,7 @@
 								</label>
 							</section>							
 						</fieldset>
-						<header> Datos Académicos </header>						
+						<header><b> Datos Académicos </b></header>
 						<fieldset>
 							<div class="row">
 								<section class="col col-6">
@@ -460,28 +646,20 @@
 										</label>
 								</section>
 						</fieldset>
-						<header> Datos Laborales </header>						
+						<header><b> Datos Laborales </b></header>
 						<fieldset>
 							<div class="row">
-								<section class="col col-3">
-									<label class="label">Fecha de Ingreso</label>
-									<label class="input">
-										<input type="date" class="input-sm" size="60" name="fecing" id="fecing" value="<?php echo $fecingreso ; ?>" required="required"> 
-									</label>
-								</section>
-								<section class="col col-2">
-									<label class="label">Años de Servicio</label>
-									<label class="input">
-										<input type="number" class="input-sm" min="1" size="10" name="anualserv" id="anualserv" value="<?php echo $anosserv ;?>" required="required">
-									</label>
-								</section>
 								<section class="col col-4">
 									<label class="label">Retirado</label>
 									<label class="select">
-										<select id="retirado" name="retirado">
+										<select id="retirado" name="retirado" onchange=" if ($('#retirado').val()=='Si'){
+											$('#retirado_si').removeClass('collapse');
+										} else {
+											$('#retirado_si').addClass('collapse');										
+										}">
 											<option value="0">Seleccione Opcion</option>
         									<?php  
-												$retirado = Combos::CombosSelect('1', $retirado, 'DISTINCT fun_retirado', 'funcionarios', 'fun_retirado', 'fun_retirado', "fun_cedula<>'' ORDER BY fun_retirado");
+												$retirado = Combos::CombosSelect('1', $retirado, 'DISTINCT fun_retirado', 'funcionarios', 'fun_retirado', 'fun_retirado', "fun_cedula='$cedula' ORDER BY fun_retirado");
 												$retirado;
 												if ($retirado==''){
 											?>
@@ -492,9 +670,21 @@
 											?>
 										</select> <i></i> 
 									</label>
-								</section>							
+								</section>
+								<section class="col col-3">
+									<label class="label">Fecha de Ingreso</label>
+									<label class="input">
+										<input type="date" class="input-sm" size="60" name="fecing" id="fecing" value="<?php echo $fecingreso ; ?>" required="required"> 
+									</label>
+								</section>
+								<section class="col col-4">
+									<label class="label">Años de Servicio</label>
+									<label class="input">
+										<input type="number" class="input-sm" min="1" size="10" name="anualserv" id="anualserv" value="<?php echo $anosserv ;?>" required="required">
+									</label>
+								</section>
 							</div>
-							<div class="row">
+							<div class="row collapse" id="retirado_si">
 								<section class="col col-3">
 									<label class="label">Fecha de Egreso</label>
 									<label class="input">
@@ -511,6 +701,42 @@
 									<label class="label">Fecha de Reingreso</label>
 									<label class="input">
 										<input type="date" class="input-sm" size="60" name="fecreing" id="fecreing" value="<?php echo $fecreingreso ; ?>"> 
+									</label>
+								</section>
+								<section class="col col-3">
+									<label class="label">Reportes de Servicio</label>
+									<label class="input">
+										<input type="number" class="input-sm" min="0" size="10" name="reports" id="reports" value="<?php echo $reportes ;?>">
+									</label>
+								</section>
+								<section class="col col-3">
+									<label class="label">Llamados de Atención</label>
+									<label class="input">
+										<input type="number" class="input-sm" min="0" size="10" name="llamadoaten" id="llamadoaten" value="<?php echo $llamados ;?>">
+									</label>
+								</section>
+								<section class="col col-4">
+									<label class="label">Denuncias Involucrado</label>
+									<label class="input">
+										<input type="number" class="input-sm" min="0" size="10" name="denuncias" id="denuncias" value="<?php echo $denuncias ;?>">
+									</label>
+								</section>
+								<section class="col col-3">
+									<label class="label">Nº de Asistencias Voluntarias</label>
+									<label class="input">
+										<input type="number" class="input-sm" min="0" size="10" name="asisvol" id="asisvol" value="<?php echo $asisvol ;?>">
+									</label>
+								</section>
+								<section class="col col-3">
+									<label class="label">Nº de Asistencias Obligatorias</label>
+									<label class="input">
+										<input type="number" class="input-sm" min="0" size="10" name="asisobli" id="asisobli" value="<?php echo $asisobli ;?>">
+									</label>
+								</section>
+								<section class="col col-4">
+									<label class="label">Nº de Expedientes Administrativos</label>
+									<label class="input">
+										<input type="number" class="input-sm" min="0" size="10" name="expedadmin" id="expedadmin" value="<?php echo $expedadmin ;?>">
 									</label>
 								</section>
 							</div>
@@ -553,7 +779,6 @@
 						</fieldset>
 						<footer>
 							<button type="submit" class="btn btn-primary"> Guardar </button>
-							<button type="button" class="btn btn-default" onclick="window.history.back();"> Regresar </button>
 						</footer>
 					</form>
 				</div>
@@ -566,144 +791,6 @@
 <?php
 	/*Si el usuario tiene permisos de lectura se muestra la tabla con los funcionarios registrados*/
 }
-	if ($permiso_accion['S']==1) {
-		$resultc = paraTodos::arrayConsulta("*", "funcionarios", "1=1")
-?>
-		<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
-			<!-- Widget ID (each widget will need unique ID)-->
-			<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
-				<header role="heading">
-					<h2>funcionarios Registrados</h2> <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span> 
-				</header>
-				<!-- widget div-->
-				<div role="content">
-					<!-- widget content -->
-					<div class="widget-body no-padding">
-						<table id="funcionarios" class="display" cellspacing="0" width="100%">
-								<thead>
-									<tr>
-										<th>Cedula</th>
-										<th>Nombres</th>
-										<th>Apellidos</th>
-										<th>Placa</th>
-										<th>Editar</th>
-										<th>Foto</th>
-										<th>Eliminar</th>
-									</tr>
-								</thead>
-								<tbody>
-<?php
-		/*Se arrojan los datos en la tabla de funcionarios registrados*/
-		foreach($resultc as $rowc){
-			//------------------------------------------------------------------------------------------------------------
-?>
-									<tr style="border-bottom: 1px solid #EEEEEE;">
-										<td><?php echo $rowc['fun_cedula'];?></td>
-										<td><?php echo $rowc['fun_nombre'];?></td>
-										<td><?php echo $rowc['fun_apellido'];?></td>
-										<td><?php echo $rowc['fun_placa'];?></td>
-										<td>
-<?php
-											/*Se verifica tenga todos los permisos*/
-        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
-?>
-												<a title="Editar el registro" onclick="
-       			 		$.ajax({
-        			 		type: 'POST',
-        			 		url: 'controller.php',
-        					data: { editar: '<?php echo $rowc[fun_codigo]; ?>', org: <?php echo $org; ?>},
-        					success: function(html) {
-        						$('#content').html(html);
-        					},
-        					error: function(xhr,msg,excep) { alert('Error Status ' + xhr.status + ': ' + msg + '/ ' + excep); }
-        				}); return false;" href="javascript: void(0);"> 
-        										<i class="fa fa-pencil-square-o" style="font-size: 1.600em;margin-left: 10px;"></i> </a>											
-<?php
-				}
-				//------------------------------------------------------------------------------------------------------------						
-?>
-										</td>
-										<td>
-<?php
-											/*Se verifica tenga todos los permisos*/
-        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
-?>										
-												<div tabindex="500" class="btn btn-primary btn-file">
-													<i class="glyphicon glyphicon-folder-open"></i>&nbsp;  
-													<span class="hidden-xs">Seleccione Imagen …</span>
-													<input id="archivoImage<?php echo $rowc['fun_cedula'];?>" name="archivoImage<?php echo $rowc['fun_cedula'];?>" type="file" class="file">					
-												</div>
-											<input id="botonSubidor" type="button" class="btn btn-default" value="Actualizar" onclick="													
-													var urlr = '<?php echo $ruta_base;?>assets/upload/rename.php';
-													var c = <?php echo $rowc['fun_cedula'];?>;
-													$.ajax({
-														url:urlr,
-														type:'POST',
-														data: { c: c }
-													});
-													var inputFileImage = document.getElementById('archivoImage<?php echo $rowc['fun_cedula'];?>');
-													var file = inputFileImage.files[0];
-													var data = new FormData();
-													data.append('archivo',file);
-													var url = '<?php echo $ruta_base;?>assets/upload/upload.php';													
-													$.ajax({
-														url:url,
-														type:'POST',
-														contentType:false,
-														data:data,
-														processData:false,
-														success : function (msg) {
-														}
-													});							
-													$.ajax({
-        			 									type: 'POST',
-        			 									url: 'controller.php',
-        												data: { editar: '<?php echo $rowc[fun_codigo]; ?>', org: <?php echo $org; ?>},
-        												success: function(html) {
-        													$('#content').html(html);
-        												},
-        												error: function(xhr,msg,excep) { alert('Error Status ' + xhr.status + ': ' + msg + '/ ' + excep); }
-        											});																																											"
-											>																					
-<?php
-				}
-				//------------------------------------------------------------------------------------------------------------						
-?>        									
-										</td>
-										<td>
-<?php
-											/*Se verifica tenga todos los permisos*/
-        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
-?>										
-											<a title="Eliminar el registro" onclick=" var msg = confirm('Esta seguro que desea eliminar el registro?');
-        									if (msg) {
-        										$.ajax({
-        											type: 'POST',
-        											url: 'controller.php',
-        											data: { borrar: <?php echo $rowc[fun_codigo]; ?>, org: <?php echo $org; ?>, cedula: <?php echo $rowc['fun_cedula'];?>},
-        											success: function(html) { $('#content').html(html); }
-        										});
-        									} return false;" href="javascript: void(0);"> <i class="fa fa-eraser" style="font-size: 1.600em;margin-left: 10px;"></i> </a>											
-<?php
-				}
-				//------------------------------------------------------------------------------------------------------------						
-?>        									
-										</td>
-									</tr>
-<?php
-		}
-?>
-							</tbody>
-						</table>
-					</div>
-					<!-- end widget content -->
-				</div>
-				<!-- end widget div -->
-			</div>
-			<!-- end widget -->
-		</article>
-<?php
-	}
 	//------------------------------------------------------------------------------------------------------------
 ?>
 <script type="text/javascript">	
@@ -711,7 +798,7 @@
 		$('#funcionarios').DataTable({
 			"language": {
 				"url": "<?php echo $ruta_base;?>assets/js/Spanish.json"
-        	}			
+        	}
 		});
 	});	
 </script>

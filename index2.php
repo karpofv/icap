@@ -9,7 +9,7 @@
     }
     switch ($_SESSION['usuario_nivel']){
 	   case 'Valido':
-            header ("Location: system/controller.php?org=33");
+            header ("Location: system/controller.php?org=1");
         break;
     }
 ?>

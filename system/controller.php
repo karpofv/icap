@@ -50,9 +50,13 @@
     if ($_POST[ver]=='') {
         $bMenu='menu_emp_sub';
     }
+	/* En caso que se reciba la variable ver vacia por POST se establece la tabla m_menu_emp_sub_menj para consultar archivos a llamar*/
+    if ($_POST[ver]=='1' or $_GET[ver]=='1') {
+        $bMenu='m_menu_emp_sub_menj';
+    }
 	//------------------------------------------------------------------------------------------------------------
 	/* Se consultan los archivos a llamar segun el menu seleccionado y se vacia en la variable $conef*/
-    $campos="URL_1,URL_2,URL_3,URL_4,URL_5";
+    $campos="URL_1,URL_2,URL_3,URL_4,URL_5,URL_6,URL_7,URL_8,URL_9,URL_10";
     $tablas="$bMenu";
     $consultas="id=$idMenut";
     $res_ = paraTodos::arrayConsulta($campos,$tablas,$consultas);
@@ -72,15 +76,26 @@
         if ($act=='5') {
              $conexf=$rownivel["URL_5"];
            }
+		if ($act=='6') {
+             $conexf=$rownivel["URL_6"];
+           }
+		if ($act=='7') {
+             $conexf=$rownivel["URL_7"];
+           }
+		if ($act=='8') {
+             $conexf=$rownivel["URL_8"];
+           }
+		if ($act=='9') {
+             $conexf=$rownivel["URL_9"];
+           }
+		if ($act=='10') {
+             $conexf=$rownivel["URL_10"];
+           }
     }
 	//----------------------------------------------------------------------------------------------------------------
-	/* En caso que se reciba la variable ver vacia por POST se establece la tabla m_menu_emp_sub_menj para consultar archivos a llamar*/
-    if ($_POST[ver]=='1') {
-        $bMenu='m_menu_emp_sub_menj';
-    }
 	//------------------------------------------------------------------------------------------------------------
 	/* En caso que se reciba la variable ver=1 se manda se ejecuta el archivo correspondiente a la tabla recargar*/
-    if ($_POST[ver]=='1' Or $_GET[ver]=='1') {
+    if ($_POST[ver]=='2' Or $_GET[ver]=='2') {
         $campos="URL";
         $tablas="recargar";
         $consultas="id=$idMenut";

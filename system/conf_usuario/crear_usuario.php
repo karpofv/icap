@@ -117,6 +117,7 @@
                                     nusuario    : $('#nusuario').val(),
                                     nclave      : $('#nclave').val(),
                                     idperfil    : $('#idperfil').val(),
+									ver 		: 1,                                    
                                     org   		: <?php echo $idsubmenu; ?>,
                                     editar     	: <?php echo $editarrt; ?>
                                 },
@@ -142,6 +143,7 @@
                                     nusuario    : $('#nusuario').val(),
                                     nclave      : $('#nclave').val(),
                                     idperfil    : $('#idperfil').val(),
+									ver 		: 1,                                    
                                     org   		: <?php echo $idsubmenu; ?>
                                 },
                                 success: function(html) {
@@ -279,7 +281,11 @@
         			 	$.ajax({
         			 		type: 'POST',
         			 		url: 'controller.php',
-        					data: { editar: '<?php echo $rowc[id]; ?>', org: <?php echo $idsubmenu; ?>, act:2},
+        					data: { 
+        						editar: '<?php echo $rowc[id]; ?>', 
+								ver 		: 1,        						
+        						org: <?php echo $idsubmenu; ?>, 
+        						act:2},
         					success: function(html) {
         						$('#page-content').html(html);
         					},
@@ -290,7 +296,13 @@
         					$.ajax({
         						type: 'POST',
         						url: 'controller.php',
-        						data: { borrar: '<?php echo $rowc[id]; ?>', org: <?php echo $idsubmenu; ?>, act:2, cedula: <?php echo $rowc['Cedula']; ?>},
+        						data: { 
+        							borrar: '<?php echo $rowc[id]; ?>', 
+									ver 		: 1,        							
+        							org: <?php echo $idsubmenu; ?>, 
+        							act:2, 
+        							cedula: <?php echo $rowc['Cedula']; ?>
+        						},
         						success: function(html) { $('#page-content').html(html); }
         					});
         				} return false;" href="javascript: void(0);"> <i class="glyph-icon icon-remove opacity-80" style="font-size: 1.600em;margin-left: 10px;"></i> </a>

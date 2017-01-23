@@ -48,9 +48,14 @@
 <body class="animated fadeInDown fondop">
 	<header id="header">
 			<div id="logo-group">
+				<a href="index.php" class="menu-inf">Inicio</a>
+				<a href="cpeb.php" class="menu-inf">CPEB</a>
+				<a href="icap.php" class="menu-inf">ICAP</a>
+				<a href="contact.php" class="menu-inf">Contactanos</a>
 			</div>	
 	</header>	
 		<div class="col-xs-12 hidden-xs hidden-sm" id="banner">
+			<img src="assets/images/banner.jpg" class="img-responsive" id="banner1">
 		</div>	
 	<div id="main" role="main">
 		<!-- MAIN CONTENT -->

@@ -87,7 +87,7 @@
 				Usuarios
 		</h1> </div>
 	</div>
-	<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+	<article class="col-sm-12 col-md-12 col-lg-6">
 		<!-- Widget ID (each widget will need unique ID)-->
 		<div class="jarviswidget jarviswidget-sortable" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false" role="widget" style="position: relative; opacity: 1; left: 0px; top: 0px;">
 			<header role="heading">
@@ -115,6 +115,7 @@
                                     nusuario    : $('#nusuario').val(),
                                     nclave      : $('#nclave').val(),
                                     idperfil    : $('#idperfil').val(),
+                                    ver 		: 1,                                    
                                     org   		: <?php echo $org; ?>,
                                     editar     	: <?php echo $editarrt; ?>
                                 },
@@ -139,6 +140,7 @@
                                     nusuario    : $('#nusuario').val(),
                                     nclave      : $('#nclave').val(),
                                     idperfil    : $('#idperfil').val(),
+                                    ver 		: 1,
                                     org   		: <?php echo $org; ?>
                                 },
                                 success: function(html) {
@@ -181,7 +183,7 @@
 							<section>
 								<label class="label">Usuario</label>
 								<label class="input">
-									<input type="text" class="input-xs" maxLength="10" size="10" name="nusuario" id="nusuario" value="<?php echo $ucemp; ?>" required="required"> </label>
+									<input type="text" class="input-xs" name="nusuario" id="nusuario" value="<?php echo $ucemp; ?>" required="required"> </label>
 							</section>
 							<section>
 								<label class="label">Contraseña</label>
@@ -196,7 +198,7 @@
 								<label class="select">
 									<select id="idperfil" name="idperfil" required="required">
 										<option value="0">Seleccione el Perfil</option>
-										<?php  Combos::CombosSelect($permiso, $id, 'DISTINCT CodPerfil,Nombre', 'perfiles', 'CodPerfil', 'Nombre', "CodPerfil<>'' ORDER BY Nombre");   ?>
+										<?php  Combos::CombosSelect($permiso, $id, 'DISTINCT CodPerfil,Nombre', 'perfiles', 'CodPerfil', 'Nombre', "CodPerfil<>'2' ORDER BY Nombre");   ?>
 									</select> <i></i> </label>
 							</section>
 						</fieldset>
@@ -217,13 +219,13 @@
 }
 	if ($permiso_accion['S']==1) {
 		$resultc = paraTodos::arrayConsulta("usuarios.id,usuarios.Cedula,usuarios.Usuario,registrados.Nombres,registrados.Apellidos,registrados.correo,
-    usuarios.Nivel", "usuarios,registrados", "usuarios.Tipo='Valido' and usuarios.Cedula=registrados.cedula")
+    usuarios.Nivel", "usuarios,registrados", "usuarios.Tipo='Valido' and usuarios.Cedula=registrados.cedula and usuarios.nivel<>2")
 ?>
-		<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+		<article class="col-sm-12 col-md-12 col-lg-6">
 			<!-- Widget ID (each widget will need unique ID)-->
 			<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
 				<header role="heading">
-					<h2>Usuarios Registrados</h2> <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span> 
+					<h2>Usuarios Registrados</h2> 
 				</header>
 				<!-- widget div-->
 				<div role="content">
@@ -261,8 +263,12 @@
         			 	$.ajax({
         			 		type: 'POST',
         			 		url: 'controller.php',
-        					data: { editar: '<?php echo $rowc[id]; ?>', org: <?php echo $org; ?>},
-        					success: function(html) {
+        					data: { 
+        						editar: '<?php echo $rowc[id]; ?>', 
+								ver 		: 1,
+        						org: <?php echo $org; ?>
+        					},
+        					success: function(html) {	
         						$('#content').html(html);
         					},
         					error: function(xhr,msg,excep) { alert('Error Status ' + xhr.status + ': ' + msg + '/ ' + excep); }
@@ -273,7 +279,12 @@
         					$.ajax({
         						type: 'POST',
         						url: 'controller.php',
-        						data: { borrar: <?php echo $rowc[id]; ?>, org: <?php echo $org; ?>, cedula: <?php echo $rowc['Cedula'];?>},
+        						data: { 
+        							borrar: <?php echo $rowc[id]; ?>,
+									ver 		: 1,
+        							org: <?php echo $org; ?>,
+        							cedula: <?php echo $rowc['Cedula'];?>
+        						},
         						success: function(html) { $('#content').html(html); }
         					});
         				} return false;" href="javascript: void(0);"> <i class="fa fa-eraser" style="font-size: 1.600em;margin-left: 10px;"></i> </a>

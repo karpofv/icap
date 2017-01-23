@@ -1,3 +1,12 @@
+	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $ruta_base; ?>assets/css/datatables.css">	
+	<div class="row">
+		<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+			<h1 class="page-title txt-color-blueDark">
+			<i class="fa fa-edit fa-fw "></i> 
+				Llamadas de atención
+			</h1>
+		</div>
+	</div>	
 <?php
 	/*Se incluyen archicos comunes*/
 	$org = $_POST['org'];
@@ -22,6 +31,80 @@
     $mostrar = $_POST['mostrar'];
 	//------------------------------------------------------------------------------------------------------------
 	/*Se verifican los permisos del usuario*/
+if ($permiso_accion['S']==1) {
+		$resultc = paraTodos::arrayConsulta("*", "funcionarios", "1=1")
+?>
+		<article class="col-sm-12 col-md-12 col-lg-6">
+			<!-- Widget ID (each widget will need unique ID)-->
+			<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
+				<header role="heading">
+					<h2>Funcionarios Registrados</h2> 
+				</header>
+				<!-- widget div-->
+				<div role="content">
+					<!-- widget content -->
+					<div class="widget-body no-padding">
+						<table id="funcionarios" class="display" cellspacing="0" width="100%">
+								<thead>
+									<tr>
+										<th>Cedula</th>
+										<th>Nombres</th>
+										<th>Apellidos</th>
+										<th>Placa</th>
+										<th>Seleccionar</th>
+									</tr>
+								</thead>
+								<tbody>
+<?php
+		/*Se arrojan los datos en la tabla de funcionarios registrados*/
+		foreach($resultc as $rowc){
+			//------------------------------------------------------------------------------------------------------------
+?>
+									<tr style="border-bottom: 1px solid #EEEEEE;">
+										<td><?php echo $rowc['fun_cedula'];?></td>
+										<td><?php echo $rowc['fun_nombre'];?></td>
+										<td><?php echo $rowc['fun_apellido'];?></td>
+										<td><?php echo $rowc['fun_placa'];?></td>																			
+										<td>
+<?php
+											/*Se verifica tenga todos los permisos*/
+        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
+?>
+												<a title="Seleccionar funcionario" onclick="
+       			 		$.ajax({
+        			 		type: 'POST',
+        			 		url: 'controller.php',
+        					data: { 
+        						mostrar: '<?php echo $rowc[fun_codigo]; ?>', 
+        						ver: 1,
+        						org: <?php echo $org; ?>
+        					},
+        					success: function(html) {
+        						$('#content').html(html);
+        					},
+        					error: function(xhr,msg,excep) { alert('Error Status ' + xhr.status + ': ' + msg + '/ ' + excep); }
+        				}); return false;" href="javascript: void(0);"> 
+        										<i class="fa fa-pencil-square-o" style="font-size: 1.600em;margin-left: 10px;"></i> </a>											
+<?php
+				}
+				//------------------------------------------------------------------------------------------------------------						
+?>
+										</td>
+									</tr>
+<?php
+		}
+?>
+							</tbody>
+						</table>
+					</div>
+					<!-- end widget content -->
+				</div>
+				<!-- end widget div -->
+			</div>
+			<!-- end widget -->
+		</article>
+<?php
+	}
     if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
 		/*GUARDAR -----------Se verifica que $editarrt=="" y las variables no se encuentren vacias para proceder a guardar  */		
         if ($editarrt=="" and $motivo!=""){
@@ -124,92 +207,11 @@
         }		
 		//------------------------------------------------------------------------------------------------------------	
 ?>
-	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $ruta_base; ?>assets/css/datatables.css">	
-	<div class="row">
-		<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-			<h1 class="page-title txt-color-blueDark">
-			<i class="fa fa-edit fa-fw "></i> 
-				Llamadas de atención
-			</h1>
-		</div>
-	</div>
-<?php
-if ($permiso_accion['S']==1) {
-		$resultc = paraTodos::arrayConsulta("*", "funcionarios", "1=1")
-?>
-		<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
-			<!-- Widget ID (each widget will need unique ID)-->
-			<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
-				<header role="heading">
-					<h2>Funcionarios Registrados</h2> <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span> 
-				</header>
-				<!-- widget div-->
-				<div role="content">
-					<!-- widget content -->
-					<div class="widget-body no-padding">
-						<table id="funcionarios" class="display" cellspacing="0" width="100%">
-								<thead>
-									<tr>
-										<th>Cedula</th>
-										<th>Nombres</th>
-										<th>Apellidos</th>
-										<th>Placa</th>
-										<th>Seleccionar</th>
-									</tr>
-								</thead>
-								<tbody>
-<?php
-		/*Se arrojan los datos en la tabla de funcionarios registrados*/
-		foreach($resultc as $rowc){
-			//------------------------------------------------------------------------------------------------------------
-?>
-									<tr style="border-bottom: 1px solid #EEEEEE;">
-										<td><?php echo $rowc['fun_cedula'];?></td>
-										<td><?php echo $rowc['fun_nombre'];?></td>
-										<td><?php echo $rowc['fun_apellido'];?></td>
-										<td><?php echo $rowc['fun_placa'];?></td>																			
-										<td>
-<?php
-											/*Se verifica tenga todos los permisos*/
-        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
-?>
-												<a title="Seleccionar funcionario" onclick="
-       			 		$.ajax({
-        			 		type: 'POST',
-        			 		url: 'controller.php',
-        					data: { mostrar: '<?php echo $rowc[fun_codigo]; ?>', org: <?php echo $org; ?>},
-        					success: function(html) {
-        						$('#content').html(html);
-        					},
-        					error: function(xhr,msg,excep) { alert('Error Status ' + xhr.status + ': ' + msg + '/ ' + excep); }
-        				}); return false;" href="javascript: void(0);"> 
-        										<i class="fa fa-pencil-square-o" style="font-size: 1.600em;margin-left: 10px;"></i> </a>											
-<?php
-				}
-				//------------------------------------------------------------------------------------------------------------						
-?>
-										</td>
-									</tr>
-<?php
-		}
-?>
-							</tbody>
-						</table>
-					</div>
-					<!-- end widget content -->
-				</div>
-				<!-- end widget div -->
-			</div>
-			<!-- end widget -->
-		</article>
-<?php
-	}
-?>
-	<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+	<article class="col-sm-12 col-md-12 col-lg-6">
 		<!-- Widget ID (each widget will need unique ID)-->
 		<div class="jarviswidget jarviswidget-sortable" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false" role="widget" style="position: relative; opacity: 1; left: 0px; top: 0px;">
 			<header role="heading">
-				<h2>Datos del Funcionario </h2> <span class="jarviswidget-loader" style="display: none;"><i class="fa fa-refresh fa-spin"></i></span> </header>
+				<h2><b>Datos del Funcionario</b> </h2> <span class="jarviswidget-loader" style="display: none;"><i class="fa fa-refresh fa-spin"></i></span> </header>
 			<!-- widget div-->
 			<div role="content">
 				<!-- widget edit box -->
@@ -231,6 +233,7 @@ if ($permiso_accion['S']==1) {
 									motivo: $('#motivo').val(),
 									relacion: $('#relacion').val(),
 									cedfun: $('#cedfun').val(),
+                                    ver 		: 1,                                   
                                     org   		: <?php echo $org; ?>,
                                     editar     	: <?php echo $editarrt; ?>
                                 },
@@ -253,6 +256,7 @@ if ($permiso_accion['S']==1) {
 									motivo: $('#motivo').val(),
 									relacion: $('#relacion').val(),
 									cedfun: $('#cedfun').val(),
+									ver 		: 1,                                   
                                     org   		: <?php echo $org; ?>
                                 },
                                 success: function(html) {
@@ -266,7 +270,7 @@ if ($permiso_accion['S']==1) {
         }
 		//------------------------------------------------------------------------------------------------------------
 ?>
-						<header> Datos Personales </header>
+						<header> <b>Datos Personales </b></header>
 						<fieldset>
 							<div class="row">
 								<section class="col col-12">
@@ -319,7 +323,7 @@ if ($permiso_accion['S']==1) {
 								</section>									
 							</div>
 						</fieldset>
-						<header> Datos Laborales </header>						
+						<header><b> Datos Laborales </b></header>						
 						<fieldset>
 							<div class="row">							
 								<section class="col col-6">
@@ -344,7 +348,7 @@ if ($permiso_accion['S']==1) {
 								</section>
 							</div>
 						</fieldset>
-						<header> Llamado de Atención </header>						
+						<header> <b> Llamado de Atención </b></header>						
 						<fieldset>
 							<div class="row">
 								<section class="col col-4">
@@ -382,7 +386,7 @@ if ($permiso_accion['S']==1) {
                                                 $.ajax({
 						        			 		type: 'POST',
         			 								url: 'controller.php',		
-        											data: { org:2, cedula: ced, ver:1},
+        											data: { org:2, cedula: ced, ver:2},
         											success: function(html) {
         												$('#tbfun').html(html);
         											},
@@ -422,7 +426,6 @@ if ($permiso_accion['S']==1) {
 						</fieldset>						
 						<footer>
 							<button type="submit" class="btn btn-primary"> Guardar </button>
-							<button type="button" class="btn btn-default" onclick="window.history.back();"> Regresar </button>
 						</footer>
 					</form>
 				</div>

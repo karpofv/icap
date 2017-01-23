@@ -202,7 +202,13 @@
         										$.ajax({
         											type: 'POST',
         											url: 'controller.php',
-        											data: { editar: $editarrt, org: <?php echo $org; ?>,cedula: <?php echo $row['denf_funcedula']?>, eliminar: 1},
+        											data: { 
+        												editar: $editarrt, 
+        												ver : 1,        												
+        												org: <?php echo $org; ?>,
+        												cedula: <?php echo $row['denf_funcedula']?>,
+        												eliminar: 1
+        											},
         											success: function(html) { $('#content').html(html); }
         										});
         									} return false;" href="javascript: void(0);"> <i class="fa fa-eraser" style="font-size: 1.600em;margin-left: 10px;"></i> </a>
@@ -277,7 +283,13 @@
         										$.ajax({
         											type: 'POST',
         											url: 'controller.php',
-        											data: { editar: $editarrt, org: <?php echo $org; ?>, cedula: <?php echo $row['denf_funcedula']?>, eliminar: 1},
+        											data: { 
+        												editar: $editarrt, 
+        												org: <?php echo $org; ?>, 
+        												ver : 1,        												
+        												cedula: <?php echo $row['denf_funcedula']?>, 
+        												eliminar: 1
+        											},
         											success: function(html) { $('#content').html(html); }
         										});
         									} return false;" href="javascript: void(0);"> <i class="fa fa-eraser" style="font-size: 1.600em;margin-left: 10px;"></i> </a>
@@ -310,7 +322,7 @@
         }		
 		//------------------------------------------------------------------------------------------------------------	
 ?>
-			<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+			<article class="col-sm-12 col-md-12 col-lg-6">
 				<!-- Widget ID (each widget will need unique ID)-->
 				<div class="jarviswidget jarviswidget-sortable" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false" role="widget" style="position: relative; opacity: 1; left: 0px; top: 0px;">
 					<header role="heading">
@@ -347,7 +359,8 @@
 									den_funcedula: $('#tcedfun').html(),
 									den_funnombre: $('#tnomfun').html(),
 									den_funapellido: $('#tapefun').html(),
-									den_funrango: $('#trango').html(),                                               
+									den_funrango: $('#trango').html(),
+                                    ver 		: 1,                                                                                  
                                     org   		: <?php echo $org; ?>,
                                     editar     	: <?php echo $editarrt; ?>
                                 },
@@ -383,6 +396,7 @@
 									den_funapellido: $('#tapefun').html(),
 									den_funrango: $('#trango').html(),
                                     mostrar: '',
+									ver 		: 1,                                    
                                     org   		: <?php echo $org; ?>
                                 },
                                 success: function(html) {
@@ -507,7 +521,7 @@
 																		$.ajax({
 																			type: 'POST',
 																			url: 'controller.php',		
-																			data: { org:2, cedula: ced, ver:1},
+																			data: { org:2, cedula: ced, ver:2},
 																			success: function(html) {
 																				$('#tbfun').html(html);
 																			},
@@ -570,7 +584,7 @@
                                                                                 opcion: 'aggfunimpl',
                                                                                 org: 352,
                                                                                 cedula: ced, 
-                                                                                ver: 1
+                                                                                ver: 2
                                                                             },
 																			success: function(html) {
                                                                                 $.ajax({
@@ -580,7 +594,7 @@
                                                                                         codigo: '<?php echo $codigo; ?>',
                                                                                         opcion: 'acttabfunimpl',
                                                                                         org: 352,
-                                                                                        ver: 1
+                                                                                        ver: 2
                                                                                     },
 																			        success: function(html) {
                                                                                         $('#tbfuncasig').html(html);
@@ -630,7 +644,7 @@
                                                                                 opcion: 'delfunimpl',
                                                                                 org: 352,
                                                                                 cedula: <?php echo $rowf['denf_funcedula']?>, 
-                                                                                ver: 1
+                                                                                ver: 2
                                                                             },
                                                                             success: function(html) {
                                                                                 $.ajax({
@@ -640,7 +654,7 @@
                                                                                         codigo: '<?php echo $rowf['denf_dencodigo']?>',
                                                                                         opcion: 'acttabfunimpl',
                                                                                         org: 352,
-                                                                                        ver: 1
+                                                                                        ver: 2
                                                                                     },
                                                                                     success: function(html) {
                                                                                         $('#tbfuncasig').html(html);
@@ -670,7 +684,6 @@
 												</fieldset>
 												<footer>
 													<button type="submit" class="btn btn-primary"> Guardar </button>
-													<button type="button" class="btn btn-default"> Cancelar </button>
 												</footer>
 										</form>
 						</div>
@@ -687,11 +700,19 @@
 		if ($permiso_accion['S']==1) {
 		$resultc = paraTodos::arrayConsulta("*", "denuncia", "1=1");
 ?>
-				<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+				<article class="col-sm-12 col-md-12 col-lg-6">
 					<!-- Widget ID (each widget will need unique ID)-->
 					<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
 						<header role="heading">
-							<h2>Denuncias Registradas</h2> <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span> </header>
+							<h2>Denuncias Registradas</h2> 
+							<?php
+								if ($permiso_accion['P']==1) {					
+							?>					
+								<a class="a-print" href="<?php echo $ruta_base;?>system/controller.php?ver=1&org=<?php echo $org;?>&act=2" target="_blank" title="Imprimir"><span class="glyphicon glyphicon-print pull-right glyph-lg"></span></a>
+							<?php
+								}	
+							?>							
+						</header>
 						<!-- widget div-->
 						<div role="content">
 							<!-- widget content -->
@@ -742,6 +763,7 @@
         			 								url: 'controller.php',		
         											data: { 
                                                         editar: '<?php echo $rowc['den_codigo']; ?>',
+                                                        ver : 1,
                                                         org: <?php echo $org; ?>
                                                     },
         											success: function(html) {
@@ -766,6 +788,7 @@
         											data: { 
                                                         mostrar: '<?php echo $rowc['den_codigo']; ?>',
                                                         org: <?php echo $org; ?>,
+                                                        ver : 1,
                                                         asigfun: 1
                                                     },
         											success: function(html) {
@@ -789,7 +812,11 @@
         										$.ajax({
         											type: 'POST',
         											url: 'controller.php',
-        											data: { borrar: <?php echo $rowc[den_codigo]; ?>, org: <?php echo $org; ?>},
+        											data: { 
+        												borrar: <?php echo $rowc[den_codigo]; ?>, 
+        												org: <?php echo $org; ?>
+        												ver: 1
+        											},
         											success: function(html) { $('#content').html(html); }
         										});
         									} return false;" href="javascript: void(0);"> <i class="fa fa-eraser" style="font-size: 1.600em;margin-left: 10px;"></i> </a>

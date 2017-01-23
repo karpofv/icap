@@ -9,9 +9,9 @@
 	background-repeat: no-repeat !important;
 }
 #banner {
-	background-image: url(../../images/banner.jpg);
-	background-size:cover;
-	height: 300px;
+	background-image: url(../../images/fondo_banner.png);
+}
+#banner1{
 }
 #imgperfil {
 	border-radius: 10px;
@@ -27,4 +27,36 @@
     background: none repeat scroll 0 0 transparent;
     cursor: inherit;
     display: block;
+}
+.glyph-lg {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-size: 24px;	
+}
+
+.a-print {
+	color: white;
+}
+
+.menu-inf {
+padding: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: rgba(51, 51, 51, 0.07);
+    border-radius: 20px;
+    color: #495b6f;
+    text-decoration: none;
+}
+.menu-inf:hover {
+    background-color: #3b5065;
+	color: #d4d4d4;
+}
+
+.email {
+	text-decoration: underline;
+	color: white;
+}
+
+#user {
+	font-weight: bold;
 }

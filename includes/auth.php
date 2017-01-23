@@ -16,6 +16,7 @@
 	require_once 'conf/configure.php';
 	require_once 'conf/conexion.php';
 	require_once 'tools.php';
+	require_once 'menu.php';
 	$url = explode("?",$_SERVER['HTTP_REFERER']);
 	$pag_referida = $url[0];
 	$redir2 = $pag_referida;

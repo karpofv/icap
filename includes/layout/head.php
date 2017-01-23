@@ -63,11 +63,8 @@
 				<li class="">
 					<a href="#" class="dropdown-toggle no-margin userdropdown" data-toggle="dropdown"> <img src="<?php echo $ruta_base;?>assets/themes/img/avatars/male.png"class="online" /> </a>
 					<ul class="dropdown-menu pull-right">
-						<li>
-							<a href="#ajax/profile.html" class="padding-10 padding-top-0 padding-bottom-0"> <i class="fa fa-user"></i> <u>Mi</u> Perfil</a>
-						</li>
 						<li class="divider"></li>
-						<li> <a href="controller.php?org=33&salir=1" class="padding-10 padding-top-5 padding-bottom-5" data-action="userLogout"><i class="fa fa-sign-out fa-lg"></i> <strong><u>S</u>alir</strong></a> </li>
+						<li> <a href="controller.php?org=1&salir=1" class="padding-10 padding-top-5 padding-bottom-5" data-action="userLogout"><i class="fa fa-sign-out fa-lg"></i> <strong><u>S</u>alir</strong></a> </li>
 					</ul>
 				</li>
 			</ul>
@@ -85,7 +82,7 @@
 			<!-- end search mobile button -->
 			<!-- fullscreen button -->
 			<div id="fullscreen" class="btn-header transparent pull-right"> <span> <a href="javascript:void(0);" data-action="launchFullscreen" title="Full Screen"><i class="fa fa-arrows-alt"></i></a> </span> </div>
-			<div class="btn-header transparent pull-right"> <span> <?php echo $_SESSION['usuario_nomusu']?> </span> </div>
+			<div class="btn-header transparent pull-right" id="user"></br> <span> <?php echo $_SESSION['usuario_nomusu']?> </span> </div>
 			<!-- end fullscreen button -->
 		</div>
 		<!-- end pulled right: nav area -->	

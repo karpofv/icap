@@ -62,13 +62,13 @@
 
 <script src="<?php echo $ruta_base; ?>assets/themes/js/tools.js"></script>
 <script src="<?php echo $ruta_base; ?>assets/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript">
+    <!--<script type="text/javascript">
         $(window).load(function(){
             setTimeout(function() {
                 $('#banner').fadeOut( 1000, "linear" );
             }, 300);
         });
-    </script>
+    </script>-->
 </body>
 <!-- Mirrored from 192.241.236.31/themes/preview/smartadmin/1.8.x/ajax/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 25 Oct 2016 06:10:26 GMT -->
 

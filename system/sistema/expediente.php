@@ -21,14 +21,123 @@
     $observ_otros = $_POST['exp_observotro'];
     $archiv = $_POST['exp_archivo'];
     $borrar = $_POST['borrar'];
-    $editarrt = $_POST['editar'];
     $eliminar = $_POST['eliminar'];
     $mostrar = $_POST['mostrar'];
 	//------------------------------------------------------------------------------------------------------------
 	/*Se verifican los permisos del usuario*/
+
+		if ($permiso_accion['S']==1) {
+		$resultc = paraTodos::arrayConsulta("*", "expediente e, estado_exp ex, expediente_func ef", "e.exp_estadoxp=ex.estxp_codigo and e.exp_codigo=ef.expf_codigo");
+?>
+		<article class="col-sm-12">
+			<!-- Widget ID (each widget will need unique ID)-->
+			<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
+				<header role="heading">
+					<h2><b>Expedientes Registrados</b></h2> 
+				<?php
+					if ($permiso_accion['P']==1) {					
+				?>					
+					<a class="a-print" href="<?php echo $ruta_base;?>system/controller.php?ver=1&org=<?php echo $org;?>&act=2" target="_blank" title="Imprimir"><span class="glyphicon glyphicon-print pull-right glyph-lg"></span></a>
+				<?php
+					}	
+					?>					
+				</header>
+				<!-- widget div-->
+				<div role="content">
+					<!-- widget content -->
+					<div class="widget-body no-padding">
+						<table id="expedientes" class="display" cellspacing="0" width="100%">
+								<thead>
+									<tr>
+										<th>Nº</th>
+										<th>Fecha</th>
+										<th>Cédula</th>
+										<th>Func. Implicado</th>
+										<th>Estado</th>
+										<th>Editar</th>
+										<th>Eliminar</th>
+									</tr>
+								</thead>
+								<tbody>
+<?php
+		/*Se arrojan los datos en la tabla de expedientes registrados*/
+		foreach($resultc as $rowc){
+			//------------------------------------------------------------------------------------------------------------
+?>
+									<tr style="border-bottom: 1px solid #EEEEEE;">
+										<td><?php echo $rowc['exp_codigo'];?></td>
+										<td><?php echo $rowc['exp_fecexp'];?></td>
+										<td><?php echo $rowc['expf_funcedula'];?></td>
+										<td><?php echo $rowc['expf_funapellido']." ".$rowc['expf_funnombre'];?></td>
+										<td><?php echo $rowc['estxp_descrip'];?></td>
+										<td>
+<?php
+										/*Se verifica tenga todos los permisos*/
+        								if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
+?>											<a title="Editar el registro" onclick="
+						       			 		$.ajax({
+						        			 		type: 'POST',
+        			 								url: 'controller.php',		
+        											data: { 
+        												mostrar: '<?php echo $rowc['exp_codigo']; ?>', 
+        												org: <?php echo $org; ?>, 
+        												ver: 1,
+        												exp_num: '<?php echo $rowc['exp_codigo']; ?>'
+        											},
+        											success: function(html) {
+        												$('#content').html(html);
+        												$('#aggfun').removeClass('collapse');
+        											},
+        											error: function(xhr,msg,excep) { alert('Error Status ' + xhr.status + ': ' + msg + '/ ' + excep); }
+        										}); return false;" href="javascript: void(0);"> 
+        										<i class="fa fa-pencil-square-o" style="font-size: 1.600em;margin-left: 10px;"></i>
+        									</a>
+<?php
+				}
+				//------------------------------------------------------------------------------------------------------------						
+?>
+										</td>
+										<td>
+<?php
+											/*Se verifica tenga todos los permisos*/
+        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
+?>										
+											<a title="Eliminar el registro" onclick=" var msg = confirm('Esta seguro que desea eliminar el registro?');
+        									if (msg) {
+        										$.ajax({
+        											type: 'POST',
+        											url: 'controller.php',
+        											data: {
+        												borrar: <?php echo $rowc[exp_codigo]; ?>, 
+        												ver: 1,
+        												org: <?php echo $org; ?>
+        											},
+        											success: function(html) { $('#content').html(html); }
+        										});
+        									} return false;" href="javascript: void(0);"> <i class="fa fa-eraser" style="font-size: 1.600em;margin-left: 10px;"></i> </a>											
+<?php
+				}
+				//------------------------------------------------------------------------------------------------------------						
+?>        									
+										</td>																				
+									</tr>
+<?php
+		}
+?>
+							</tbody>
+						</table>
+					</div>
+					<!-- end widget content -->
+				</div>
+				<!-- end widget div -->
+			</div>
+			<!-- end widget -->
+		</article>
+<?php
+		}
     if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
 		/*GUARDAR -----------Se verifica que $editarrt=="" y las variables no se encuentren vacias para proceder a guardar  */
-        if ($mostrar == "" and $editarrt=="" and $fecexp!=""){
+        if ($mostrar == "" and $fecexp!="" and $_POST['cedula']== ''){
 			/*Se verifica no se encuentre ya registrado el Expediente de lo contrario se realiza el insert*/
 			$resultx = paraTodos::arrayConsultanum("exp_codigo", "expedientes", "exp_codigo = '$num'");
 			if ($resultx > 0){
@@ -44,7 +153,6 @@
 						<a class="close" data-dismiss="alert" href="#">×</a>
 						<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Expediente Aperurado!</h4>
 					</div>';
-					$editarrt="";
     				$num= "";
     				$fecexp =  "";
     				$estatus =  "";
@@ -66,17 +174,16 @@
 		}
 		//------------------------------------------------------------------------------------------------------------
 		/*UPDATE--------------Se verifica que $editarrt!="" y las variables no se encuentren vacias para proceder a Editar*/
-        if ($editarrt!="" and $num!="" and $_POST['cedula'] == ''){
+        if ($mostrar!="" and $fecexp!="" and $_POST['cedula']== ''){
 			//------------------------------------------------------------------------------------------------------------
 			/*Se modifica los datos de registro del Expediente*/			
-			$modifico = paraTodos::arrayUpdate("exp_num='0',exp_fecexp='$fecexp',exp_estatus='$estatus',exp_hechos='$hechos',exp_fecdili='$fecdili',exp_especif='$espec',exp_estadoxp='$estadoxp',exp_observotro='$observ_otros',exp_archivo='$archiv'", "expediente", "exp_codigo='$editarrt'");			
+			$modifico = paraTodos::arrayUpdate("exp_num='0',exp_fecexp='$fecexp',exp_estatus='$estatus',exp_hechos='$hechos',exp_fecdili='$fecdili',exp_especif='$espec',exp_estadoxp='$estadoxp',exp_observotro='$observ_otros',exp_archivo='$archiv'", "expediente", "exp_codigo='$mostrar'");			
             if($modifico){
 				echo '
 				<div class="alert alert-block alert-success">
 					<a class="close" data-dismiss="alert" href="#">×</a>
 					<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Registro Modificado!</h4>
 				</div>';
-				$editarrt="";
     			$num= "";
     			$fecexp =  "";
     			$estatus =  "";
@@ -91,7 +198,7 @@
         }
 		//------------------------------------------------------------------------------------------------------------		
 		/*MOSTRAR---------------------Se verifica si la variable $editarr!="" para proceder a Mostrar los datos guardados del Expediente*/
-        if ($mostrar!="" and $_POST['cedula'] == '') {
+        if ($mostrar!="" and $_POST['cedula'] == '' and $fecexp=='') {
 			$resultsedes = paraTodos::arrayConsulta("*", "expediente", "exp_codigo = '$mostrar'");
             foreach ($resultsedes as $row){
 				$codigo = $row['exp_codigo'];
@@ -106,8 +213,8 @@
 			}
         }
         /*ACTUALIZAR TABLA DE FUNCIONARIOS IMPLICADOS---------------------*/
-        if ($editarrt!="" and $_POST['cedula']!= '' and $eliminar==''){
-			$resultsedes = paraTodos::arrayConsulta("*", "expediente", "exp_codigo = '$editarrt'");
+        if ($mostrar!="" and $_POST['cedula']!= '' and $eliminar==''){
+			$resultsedes = paraTodos::arrayConsulta("*", "expediente", "exp_codigo = '$mostrar'");
             foreach ($resultsedes as $row){
 				$codigo = $row['exp_codigo'];
 				$fecexp = $row['exp_fecexp'];
@@ -123,13 +230,13 @@
             $validarfun = paraTodos::arrayConsultanum("*", "funcionarios", "fun_cedula = '$_POST[cedula]'");
             if ($validarfun>0){
                 /*SE VALIDA EL FUNCIONARIO NO SE ENCUENTRE YA ASIGNADO AL EXPEDIENTE*/
-                $validarfunrep = paraTodos::arrayConsultanum("*", "expediente_func", "expf_expcodigo = $editarrt and expf_funcedula=$_POST[cedula]");
+                $validarfunrep = paraTodos::arrayConsultanum("*", "expediente_func", "expf_expcodigo = $mostrar and expf_funcedula=$_POST[cedula]");
                 if ($validarfunrep == 0){
                     $funcionario = paraTodos::arrayConsulta("*", "funcionarios f, rangos r", " f.fun_rango=r.rang_codigo and fun_cedula =$_POST[cedula]");
                     foreach ($funcionario as $rowf){
-				        $insertar = paraTodos::arrayInserte("expf_expcodigo, expf_funcedula, expf_funnombre, expf_funapellido, expf_funrango","expediente_func","$editarrt,$_POST[cedula],'$rowf[fun_nombre]','$rowf[fun_apellido]','$rowf[rang_descrip]'");
+				        $insertar = paraTodos::arrayInserte("expf_expcodigo, expf_funcedula, expf_funnombre, expf_funapellido, expf_funrango","expediente_func","$mostrar,$_POST[cedula],'$rowf[fun_nombre]','$rowf[fun_apellido]','$rowf[rang_descrip]'");
                     }
-                    $resultsedes = paraTodos::arrayConsulta("*", "expediente_fun", "expf_expcodigo = '$editarrt'");
+                    $resultsedes = paraTodos::arrayConsulta("*", "expediente_fun", "expf_expcodigo = '$mostrar'");
                     foreach ($resultsedes as $row){
     ?>
                     <tr>
@@ -146,7 +253,13 @@
         										$.ajax({
         											type: 'POST',
         											url: 'controller.php',
-        											data: { editar: $editarrt, org: <?php echo $org; ?>,cedula: <?php echo $row['expf_funcedula']?>, eliminar: 1},
+        											data: {
+        												mostrar: $mostrar, 
+        												org: <?php echo $org; ?>,
+        												cedula: <?php echo $row['expf_funcedula']?>, 
+        												ver: 1,
+        												eliminar: 1
+        											},
         											success: function(html) { $('#content').html(html); }
         										});
         									} return false;" href="javascript: void(0);"> 
@@ -176,8 +289,8 @@
             }
         }
         /*ELIMINAR FUNCIONARIO ASIGNADO*/
-        if ($editarrt!="" and $_POST['cedula']!= '' and $eliminar!=''){
-			$resultsedes = paraTodos::arrayConsulta("*", "expediente", "exp_codigo = '$editarrt'");
+        if ($mostrar!="" and $_POST['cedula']!= '' and $eliminar!=''){
+			$resultsedes = paraTodos::arrayConsulta("*", "expediente", "exp_codigo = '$mostrar'");
             foreach ($resultsedes as $row){
 				$codigo = $row['exp_codigo'];
 				$fecexp = $row['exp_fecexp'];
@@ -190,7 +303,7 @@
 				$archiv = $row['exp_archivo'];
 			}     
             $insertar = paraTodos::arrayDelete("expf_funcedula=$_POST[cedula]","expediente_func");
-            $resultsedes = paraTodos::arrayConsulta("*", "expediente_fun", "expf_expcodigo = '$editarrt'");
+            $resultsedes = paraTodos::arrayConsulta("*", "expediente_fun", "expf_expcodigo = '$mostrar'");
             foreach ($resultsedes as $row){
 ?>
                 <tr>
@@ -207,7 +320,13 @@
         										$.ajax({
         											type: 'POST',
         											url: 'controller.php',
-        											data: { editar: $editarrt, org: <?php echo $org; ?>, cedula: <?php echo $row['expf_funcedula']?>, eliminar: 1},
+        											data: { 
+        												mostrar: $mostrar, 
+        												org: <?php echo $org; ?>, 
+        												cedula: <?php echo $row['expf_funcedula']?>, 
+        												ver: 1,
+        												eliminar: 1
+        											},
         											success: function(html) { $('#content').html(html); }
         										});
         									} return false;" href="javascript: void(0);"> 
@@ -242,11 +361,11 @@
         }		
 		//------------------------------------------------------------------------------------------------------------	
 ?>
-	<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+	<article class="col-sm-12">
 		<!-- Widget ID (each widget will need unique ID)-->
 		<div class="jarviswidget jarviswidget-sortable" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false" role="widget" style="position: relative; opacity: 1; left: 0px; top: 0px;">
 			<header role="heading">
-				<h2>Expediente CPEB </h2> <span class="jarviswidget-loader" style="display: none;"><i class="fa fa-refresh fa-spin"></i></span> </header>
+				<h2><b>Expediente CPEB</b></h2> <span class="jarviswidget-loader" style="display: none;"><i class="fa fa-refresh fa-spin"></i></span> </header>
 			<!-- widget div-->
 			<div role="content">
 				<!-- widget edit box -->
@@ -257,7 +376,7 @@
 				<!-- widget content -->
 				<div class="widget-body no-padding">
 <?php
-        if ($editarrt!='') {
+        if ($mostrar!='') {
 ?>
 						<FORM onsubmit="$.ajax({
                                 type: 'POST',
@@ -272,8 +391,9 @@
 									exp_estadoxp: $('#estadoxp').val(),
 									exp_observotro: $('#observ_otros').val(),
 									exp_archivo: $('#archiv').val(),
+                                    ver 		: 1,                                   
                                     org   		: <?php echo $org; ?>,
-                                    editar     	: <?php echo $editarrt; ?>
+                                    mostrar     	: <?php echo $mostrar; ?>
                                 },
                                 success: function(html) {
                                 	$('#content').html(html);
@@ -298,6 +418,7 @@
 									exp_estadoxp: $('#estadoxp').val(),
 									exp_observotro: $('#observ_otros').val(),
 									exp_archivo: $('#archiv').val(),
+									ver 		: 1,                                   
                                     org   		: <?php echo $org; ?>
                                 },
                                 success: function(html) {
@@ -315,12 +436,12 @@
 						<header> Datos Generales del Expediente </header>						
 						<fieldset>
 							<div class="row">
-								<section class="col col-3">
+								<section class="col col-2">
 									<label class="label">Fecha de Expediente</label>
 									<label class="input">
 										<input type="date" class="input-sm" size="60" name="fecexp" id="fecexp" value="<?php echo $fecexp ; ?>" required="required"> </label>								
 								</section>
-								<section class="col col-6">
+								<section class="col col-3">
 									<label class="label">Estatus</label>
 									<label class="select">
 										<select id="estatus" name="estatus">
@@ -339,19 +460,19 @@
 									</label>
 							</section>
 							<div class="row">
-								<section class="col col-3">
+								<section class="col col-2">
 									<label class="label">Fecha de la ultima Diligencia</label>
 									<label class="input">
 										<input type="date" class="input-sm" size="60" name="fecdili" id="fecdili" value="<?php echo $fecdili ; ?>"> </label>								
 								</section>
-								<section  class="col col-9">
+								<section  class="col col-10">
 									<label class="label">Especifique</label>
 									<label class="input">
 										<input type="text"class="input-sm" maxLength="100" size="60" name="espec" id="espec" value="<?php echo $espec ; ?>"> </label>								
 								</section>
                             </div>
                             <div class="row">
-								<section class="col col-6">
+								<section class="col col-2">
 									<label class="label">Estado</label>
 									<label class="select">
 										<select id="estadoxp" name="estadoxp">
@@ -362,12 +483,12 @@
 										</select> <i></i> 
 									</label>
 								</section>	
-								<section  class="col col-9 collapse" id="secobserv_otros">
+								<section  class="col col-10 collapse" id="secobserv_otros">
 									<label class="label">Observación</label>
 									<label class="input">
 										<input type="text"class="input-sm" maxLength="100" size="60" name="observ_otros" id="observ_otros" value="<?php echo $observ_otros ; ?>"> </label>								
 								</section>
-								<section  class="col col-9 collapse" id="secarchiv">
+								<section  class="col col-10 collapse" id="secarchiv">
 									<label class="label">Archivo</label>
 									<label class="input">
 										<input type="text"class="input-sm archivo" maxLength="100" size="60" name="archiv" id="archiv" value="<?php echo $archiv ; ?>">
@@ -390,7 +511,12 @@
                                                 $.ajax({
 						        			 		type: 'POST',
         			 								url: 'controller.php',		
-        											data: { editar: '<?php echo $codigo; ?>', org: <?php echo $org; ?>, cedula: ced},
+        											data: { 
+        												mostrar: '<?php echo $codigo; ?>', 
+        												org: <?php echo $org; ?>, 
+        												ver: 1,
+        												cedula: ced
+        											},
         											success: function(html) {
         												$('#content').html(html);
         												$('#aggfun').removeClass('collapse');        												
@@ -430,7 +556,13 @@
         										$.ajax({
         											type: 'POST',
         											url: 'controller.php',
-        											data: { editar: <?php echo $rowf[expf_expcodigo]; ?>, org: <?php echo $org; ?>,cedula: <?php echo $rowf['expf_funcedula']?>, eliminar: 1},
+        											data: { 
+        												mostrar: <?php echo $rowf[expf_expcodigo]; ?>, 
+        												org: <?php echo $org; ?>,
+        												cedula: <?php echo $rowf['expf_funcedula']?>, 
+        												ver:1,
+        												eliminar: 1
+        											},
         											success: function(html) { 
         												$('#content').html(html);
         												$('#aggfun').removeClass('collapse');
@@ -454,7 +586,6 @@
 						</fieldset>                                    
 						<footer>
 							<button type="submit" class="btn btn-primary"> Guardar </button>
-							<button type="button" class="btn btn-default"> Cancelar </button>
 						</footer>
 					</form>
 				</div>
@@ -468,95 +599,6 @@
 	/*Si el usuario tiene permisos de lectura se muestra la tabla con los expdientes registrados*/
 }
 
-		if ($permiso_accion['S']==1) {
-		$resultc = paraTodos::arrayConsulta("*", "expediente, estado_exp", "exp_estadoxp=estxp_codigo");
-?>
-		<article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
-			<!-- Widget ID (each widget will need unique ID)-->
-			<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
-				<header role="heading">
-					<h2>Expedientes Registrados</h2> <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span> 
-				</header>
-				<!-- widget div-->
-				<div role="content">
-					<!-- widget content -->
-					<div class="widget-body no-padding">
-						<table id="expedientes" class="display" cellspacing="0" width="100%">
-								<thead>
-									<tr>
-										<th>Nº</th>
-										<th>Fecha</th>
-										<th>Estado</th>
-										<th>Editar</th>
-										<th>Eliminar</th>
-									</tr>
-								</thead>
-								<tbody>
-<?php
-		/*Se arrojan los datos en la tabla de expedientes registrados*/
-		foreach($resultc as $rowc){
-			//------------------------------------------------------------------------------------------------------------
-?>
-									<tr style="border-bottom: 1px solid #EEEEEE;">
-										<td><?php echo $rowc['exp_codigo'];?></td>
-										<td><?php echo $rowc['exp_fecexp'];?></td>
-										<td><?php echo $rowc['estxp_descrip'];?></td>
-										<td>
-<?php
-										/*Se verifica tenga todos los permisos*/
-        								if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
-?>											<a title="Editar el registro" onclick="
-						       			 		$.ajax({
-						        			 		type: 'POST',
-        			 								url: 'controller.php',		
-        											data: { mostrar: '<?php echo $rowc['exp_codigo']; ?>', org: <?php echo $org; ?>, exp_num: '<?php echo $rowc['exp_codigo']; ?>'},
-        											success: function(html) {
-        												$('#content').html(html);
-        												$('#aggfun').removeClass('collapse');
-        											},
-        											error: function(xhr,msg,excep) { alert('Error Status ' + xhr.status + ': ' + msg + '/ ' + excep); }
-        										}); return false;" href="javascript: void(0);"> 
-        										<i class="fa fa-pencil-square-o" style="font-size: 1.600em;margin-left: 10px;"></i>
-        									</a>
-<?php
-				}
-				//------------------------------------------------------------------------------------------------------------						
-?>
-										</td>
-										<td>
-<?php
-											/*Se verifica tenga todos los permisos*/
-        									if ($permiso_accion['S']==1 AND $permiso_accion['I']==1 AND $permiso_accion['U']==1 AND $permiso_accion['D']==1) {
-?>										
-											<a title="Eliminar el registro" onclick=" var msg = confirm('Esta seguro que desea eliminar el registro?');
-        									if (msg) {
-        										$.ajax({
-        											type: 'POST',
-        											url: 'controller.php',
-        											data: { borrar: <?php echo $rowc[exp_codigo]; ?>, org: <?php echo $org; ?>},
-        											success: function(html) { $('#content').html(html); }
-        										});
-        									} return false;" href="javascript: void(0);"> <i class="fa fa-eraser" style="font-size: 1.600em;margin-left: 10px;"></i> </a>											
-<?php
-				}
-				//------------------------------------------------------------------------------------------------------------						
-?>        									
-										</td>																				
-									</tr>
-<?php
-		}
-?>
-							</tbody>
-						</table>
-					</div>
-					<!-- end widget content -->
-				</div>
-				<!-- end widget div -->
-			</div>
-			<!-- end widget -->
-		</article>
-<?php
-		}
 ?>
 <script type="text/javascript">
 	$(document).ready(function() {
