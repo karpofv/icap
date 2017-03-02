@@ -12,18 +12,18 @@
     $pdf=new PDF(); 
 	$pdf->addpage();
 	$pdf->SetFont('Arial','B',8);
-	$pdf->Image($absolute_uri.'assets/images/policiaest.jpg',5,5,-700);
-	$pdf->Cell(0,5,utf8_decode('GOBERNACIÓN DEL ESTADO BARINAS'),0,1,'C');
-	$pdf->Cell(0,5,utf8_decode('CUERPO DE POLICÍA DEL ESTADO BARINAS'),0,1,'C');
-	$pdf->Cell(0,5,utf8_decode('OFICINA DE CONTROL Y ACTUACIÓN POLICIAL'),0,1,'C');
-	$pdf->Ln(5);
+	$pdf->Image($absolute_uri.'assets/images/cintillo_reporte.jpg',5,5,0);
+	$pdf->Ln(20);
 	$pdf->SetFont('Arial','B',10);
     $pdf->Cell(0,10,'RECORD DE CONDUCTA',0,0,'C');
 	foreach($funcionarios as $rowf){
 		$cedula = $rowf['fun_cedula'];
-		$fecnac = $rowf['fun_fecnac'];
+		$nombre = $rowf['fun_nombre'];
+		$apellido = $rowf['fun_apellido'];
+		$fecnac = paraTodos::convertDate($rowf['fun_fecnac']);
 		$nacional = $rowf['fun_nacionalidad'];
-		$ingreso = $rowf['fun_fecingreso'];
+		$rango = $rowf['rang_descrip'];
+		$ingreso = paraTodos::convertDate($rowf['fun_fecingreso']);
 		$procede = $rowf['fun_procedencia'];
 		$padre = $rowf['fun_nom_padre'];
 		$madre = $rowf['fun_nom_madre'];
@@ -32,8 +32,8 @@
 		$cargaf = $rowf['fun_cargafam'];
 		$profesion = $rowf['fun_profesion'];
 	}
-	$edad= date('Y-m-d')-$fecnac;
-	$antiguedad= date('Y-m-d')-$ingreso;
+	$edad= date('Y-m-d')-$rowf['fun_fecnac'];
+	$antiguedad= date('Y-m-d')-$rowf['fun_fecingreso'];
 	if($nacional=='V'){
 		$nacional='VENEZOLANO(A)';
 	}
@@ -44,6 +44,14 @@
     $pdf->Cell(90,5,utf8_decode('Cédula:'),1,0,'L');
 	$pdf->SetFont('Arial','',10);
     $pdf->Cell(90,5,$cedula,1,1,'L');
+	$pdf->SetFont('Arial','B',10);
+    $pdf->Cell(90,5,utf8_decode('Nombres:'),1,0,'L');
+	$pdf->SetFont('Arial','',10);
+    $pdf->Cell(90,5,$nombre,1,1,'L');
+	$pdf->SetFont('Arial','B',10);
+    $pdf->Cell(90,5,utf8_decode('Apellidos:'),1,0,'L');
+	$pdf->SetFont('Arial','',10);
+    $pdf->Cell(90,5,$apellido,1,1,'L');
 	$pdf->SetFont('Arial','B',10);
 	$pdf->Cell(90,5,utf8_decode('Fecha de Nacimiento:'),1,0,'L');
 	$pdf->SetFont('Arial','',10);
@@ -56,6 +64,10 @@
 	$pdf->Cell(90,5,utf8_decode('Nacionalidad:'),1,0,'L');
 	$pdf->SetFont('Arial','',10);
     $pdf->Cell(90,5,$nacional,1,1,'L');
+    $pdf->SetFont('Arial','B',10);
+	$pdf->Cell(90,5,utf8_decode('Rango:'),1,0,'L');
+	$pdf->SetFont('Arial','',10);
+    $pdf->Cell(90,5,$rango,1,1,'L');
 	$pdf->SetFont('Arial','B',10);
 	$pdf->Cell(90,5,utf8_decode('Fecha de Ingreso:'),1,0,'L');
 	$pdf->SetFont('Arial','',10);
@@ -135,12 +147,12 @@
 	$pdf->Ln();
 	$llamados = paraTodos::arrayConsulta("*", "llamados", "llam_funcedula=$_GET[ced]");
 	foreach ($llamados as $row){
-		$numll= $row[asis_expcodigo];		
-		if (strlen($row[asis_expcodigo])==2){
-			$numll= "0".$row[asis_expcodigo];
+		$numll= $row[llam_codigo];
+		if (strlen($row[llam_codigo])==2){
+			$numll= "0".$row[llam_codigo];
 		}
-		if (strlen($row[asis_expcodigo])==1){
-			$numll= "00".$row[asis_expcodigo];	
+		if (strlen($row[llam_codigo])==1){
+			$numll= "00".$row[llam_codigo];
 		}
 		$pdf->Cell(0,10,utf8_decode("$row[llam_fecha] / Nº $numll / $row[llam_motivo]."),0,1,'L');
 	}

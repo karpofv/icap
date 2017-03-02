@@ -45,7 +45,6 @@
 			}  
 			unset($login);
 			unset($password);
-			session_name($sess_name);
 			session_start();
 			session_cache_limiter('nocache,private');
 			$_SESSION['usuario_nivel'] = $usuario_consulta[0]['Tipo'];
@@ -69,7 +68,6 @@
 			exit;
 		}
 	} else {
-		session_name($sess_name);
 		session_start();
 		$auth['S']=1;
 		$auth['I']=1;

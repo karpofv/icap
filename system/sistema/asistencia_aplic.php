@@ -80,10 +80,17 @@ if ($permiso_accion['S']==1) {
 		/*Se arrojan los datos en la tabla de funcionarios registrados*/
 		$resultc = paraTodos::arrayConsulta("*", "asistencia_o a, funcionarios f", "a.asis_funcedula=f.fun_cedula");
 		foreach($resultc as $rowc){
+            $codigom = $rowc['asis_expcodigo'];
+            if (strlen($codigom)==2){
+                $codigom="0".$codigom;
+            }
+            if (strlen($codigom)==1){
+                $codigom="00".$codigom;
+            }
 			//------------------------------------------------------------------------------------------------------------
 ?>
 									<tr style="border-bottom: 1px solid #EEEEEE;">
-										<td><?php echo $rowc['asis_expcodigo'];?></td>
+										<td><?php echo $codigom;?></td>
 										<td><?php echo $rowc['asis_fecha'];?></td>
 										<td><?php echo $rowc['fun_cedula'];?></td>
 										<td><?php echo $rowc['fun_nombre'];?></td>

@@ -27,7 +27,8 @@
 	/*Se verifican los permisos del usuario*/
 
 		if ($permiso_accion['S']==1) {
-		$resultc = paraTodos::arrayConsulta("*", "expediente e, estado_exp ex, expediente_func ef", "e.exp_estadoxp=ex.estxp_codigo and e.exp_codigo=ef.expf_codigo");
+		$resultc = paraTodos::arrayConsulta("*", " estado_exp ex,expediente e
+left join expediente_func ef on ef.expf_expcodigo=e.exp_codigo", "ex.estxp_codigo=e.exp_estadoxp");
 ?>
 		<article class="col-sm-12">
 			<!-- Widget ID (each widget will need unique ID)-->
@@ -62,10 +63,17 @@
 <?php
 		/*Se arrojan los datos en la tabla de expedientes registrados*/
 		foreach($resultc as $rowc){
+            $codigom = $rowc['exp_codigo'];
+            if (strlen($codigom)==2){
+                $codigom="0".$codigom;
+            }
+            if (strlen($codigom)==1){
+                $codigom="00".$codigom;
+            }
 			//------------------------------------------------------------------------------------------------------------
 ?>
 									<tr style="border-bottom: 1px solid #EEEEEE;">
-										<td><?php echo $rowc['exp_codigo'];?></td>
+										<td><?php echo $codigom;?></td>
 										<td><?php echo $rowc['exp_fecexp'];?></td>
 										<td><?php echo $rowc['expf_funcedula'];?></td>
 										<td><?php echo $rowc['expf_funapellido']." ".$rowc['expf_funnombre'];?></td>

@@ -17,16 +17,16 @@
 $empresa_name   = "ICAP"; // Nombre de la empresa
 $system_title   = "ICAP | BARINAS"; //titulo del sistema ::: TEC
 $foot_page      = ".:: Aplicaci&oacute;n Web ::: ICAP - Barinas ::.";
-$host_system    = "localhost";
+$host_system    = "karpofv.ddns.net";
 $auth_table     = 'usuarios'; // Nombre de la tabla que contendra los datos de los usuarios
 $usuarios_sesion = 'the_name_session';
-$redir          = 'http://localhost/icap/index.php';
-$ruta_base      = '//localhost/icap/';
+$redir          = 'http://karpofv.ddns.net/icap/index.php';
+$ruta_base      = '//karpofv.ddns.net/icap/';
 // Configuracion de Modulos Activos en en Sistema (0:Inactivo, 1:Activo)
 $mod_moodle  = 0;
 //Mod Chat
 global $absolute_uri;
-$absolute_uri   = 'http://localhost/icap/';
+$absolute_uri   = 'http://karpofv.ddns.net/icap/';
 $mod_chat       = 1;
 // Mensajes de error.
 $ruta_album = "../fotoAlbum/";

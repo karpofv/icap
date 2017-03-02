@@ -42,7 +42,7 @@
     $editarrt = $_POST['editar'];
 	//------------------------------------------------------------------------------------------------------------
 if ($permiso_accion['S']==1) {
-		$resultc = paraTodos::arrayConsulta("*", "funcionarios", "1=1")
+		$resultc = paraTodos::arrayConsulta("*", "funcionarios f, sexo s", " f.fun_genero=s.id");
 ?>
 		<article class="col-sm-12">
 			<!-- Widget ID (each widget will need unique ID)-->
@@ -69,6 +69,7 @@ if ($permiso_accion['S']==1) {
 										<th>Nombres</th>
 										<th>Apellidos</th>
 										<th>Placa</th>
+										<th>Sexo</th>
 										<th>Editar</th>
 										<th>Foto</th>
 										<th>Eliminar</th>
@@ -86,6 +87,7 @@ if ($permiso_accion['S']==1) {
 										<td><?php echo $rowc['fun_nombre'];?></td>
 										<td><?php echo $rowc['fun_apellido'];?></td>
 										<td><?php echo $rowc['fun_placa'];?></td>
+										<td><?php echo $rowc['Nombre'];?></td>
 										<td>
 <?php
 											/*Se verifica tenga todos los permisos*/

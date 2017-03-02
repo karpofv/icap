@@ -12,24 +12,22 @@
     $pdf=new PDF(); 
 	$pdf->addpage('L','Letter',0);
 	$pdf->SetFont('Arial','B',8);
-	$pdf->Image($absolute_uri.'assets/images/policiaest.jpg',5,5,-700);
-	$pdf->Cell(0,5,utf8_decode('GOBERNACIÓN DEL ESTADO BARINAS'),0,1,'C');
-	$pdf->Cell(0,5,utf8_decode('CUERPO DE POLICÍA DEL ESTADO BARINAS'),0,1,'C');
-	$pdf->Cell(0,5,utf8_decode('OFICINA DE CONTROL Y ACTUACIÓN POLICIAL'),0,1,'C');
-	$pdf->Ln(5);
+	$pdf->Image($absolute_uri.'assets/images/cintillo_reporte.jpg',45,5,0);
+	$pdf->Ln(20);
 	$pdf->SetFont('Arial','B',10);
     $pdf->Cell(0,10,'HISTORICO DE EXPEDIENTE',0,0,'C');
 	$pdf->Ln();
 	$pdf->SetFont('Arial','B',6);
     $pdf->Cell(25,4,utf8_decode('Identificación Expdiente'),1,0,'C');
-    $pdf->Cell(90,4,utf8_decode('Identificación Funcionario'),1,0,'C');
+    $pdf->Cell(91,4,utf8_decode('Identificación Funcionario'),1,0,'C');
     $pdf->Cell(60,4,utf8_decode('Estatus del Expediente'),1,0,'C');
     $pdf->Cell(75,4,utf8_decode('Estado'),1,1,'C');
     $pdf->Cell(10,4,utf8_decode('Nº'),1,0,'C');
     $pdf->Cell(15,4,'Fecha',1,0,'C');
     $pdf->Cell(25,4,'Nombre',1,0,'C');
     $pdf->Cell(25,4,'Apellido',1,0,'C');
-    $pdf->Cell(15,4,utf8_decode('Cédula'),1,0,'C');
+    $pdf->Cell(10,4,utf8_decode('Cédula'),1,0,'C');
+    $pdf->Cell(6,4,'Sexo',1,0,'C');
     $pdf->Cell(25,4,'Rango',1,0,'C');
     $pdf->Cell(15,4,'Cerrado',1,0,'C');
     $pdf->Cell(15,4,'Asist. Vol.',1,0,'C');
@@ -44,6 +42,7 @@
 	$pdf->SetFont('Arial','',6);
 	$cuenta=0;
 	foreach($funcionarios as $rowf){
+        $consulsex = paraTodos::arrayConsulta("Nombre", "funcionarios f, sexo s", "f.fun_genero=s.id");
 		$exp= $rowf[asis_expcodigo];		
 		if (strlen($rowf[exp_codigo])==2){
 			$exp= "0".$rowf[exp_codigo];
@@ -55,7 +54,8 @@
 		$pdf->Cell(15,4,$rowf[exp_fecexp],1,0,'C');
 		$pdf->Cell(25,4,$rowf[expf_funnombre],1,0,'C');
 		$pdf->Cell(25,4,$rowf[expf_funapellido],1,0,'C');
-		$pdf->Cell(15,4,$rowf[expf_funcedula],1,0,'C');
+		$pdf->Cell(10,4,$rowf[expf_funcedula],1,0,'C');
+		$pdf->Cell(6,4,substr($consulsex[0][Nombre],0,1),1,0,'C');
 		$pdf->Cell(25,4,$rowf[expf_funrango],1,0,'C');
 		if ($rowf[exp_estatus]==1) {
 			$cerrado='X';

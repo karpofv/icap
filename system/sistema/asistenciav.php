@@ -69,10 +69,17 @@ if ($permiso_accion['S']==1) {
 <?php
 		/*Se arrojan los datos en la tabla de funcionarios registrados*/
 		foreach($resultc as $rowc){
+            $codigom = $rowc['exp_codigo'];
+            if (strlen($codigom)==2){
+                $codigom="0".$codigom;
+            }
+            if (strlen($codigom)==1){
+                $codigom="00".$codigom;
+            }
 			//------------------------------------------------------------------------------------------------------------
 ?>
 									<tr style="border-bottom: 1px solid #EEEEEE;">
-										<td><?php echo $rowc['exp_codigo'];?></td>
+										<td><?php echo $codigom;?></td>
 										<td><?php echo $rowc['fun_cedula'];?></td>
 										<td><?php echo $rowc['fun_nombre'];?></td>
 										<td><?php echo $rowc['fun_apellido'];?></td>

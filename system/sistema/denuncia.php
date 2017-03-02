@@ -734,11 +734,18 @@
 										<?php
 		/*Se arrojan los datos en la tabla de denuncias registradas*/
 		foreach($resultc as $rowc){
+            $codigom = $rowc['den_codigo'];
+            if (strlen($codigom)==2){
+                $codigom="0".$codigom;
+            }
+            if (strlen($codigom)==1){
+                $codigom="00".$codigom;
+            }
 			//------------------------------------------------------------------------------------------------------------
 ?>
 											<tr style="border-bottom: 1px solid #EEEEEE;">
 												<td>
-													<?php echo $rowc['den_codigo'];?>
+													<?php echo $codigom;?>
 												</td>
 												<td>
 													<?php echo $rowc['den_fecha'];?>
